@@ -1,0 +1,163 @@
+﻿@model IEnumerable<ExpoBookApp.Models.Event>
+
+@{
+    ViewData["Title"] = "Browse Event";
+}
+<h1>@ViewData["Title"]</h1>
+<br />
+
+<!--Upcoming Event-->
+<div>
+    <h4>Upcoming Event</h4> <!--Event that are nearing day 1-->
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EventName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Theme)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Venue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketBought)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketQuota)
+        </th>
+    </tr>
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Theme)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Venue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketBought)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketQuota)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="7" class="text-center">No upcoming events found.</td>
+        </tr>
+    }
+    
+</table>
+<div>
+    <p>Placeholder for Filter</p>
+    
+</div>
+<div>
+    <h4>Others</h4> <!--List of other events with filter-->
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EventName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Theme)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Venue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketPrice)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketBought)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TicketQuota)
+        </th>
+    </tr>
+
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Theme)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Venue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketBought)
+                    <p>/</p>
+                    @Html.DisplayFor(modelItem => item.TicketQuota)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="7" class="text-center">No listed events found.</td>
+        </tr>
+    }
+
+</table>

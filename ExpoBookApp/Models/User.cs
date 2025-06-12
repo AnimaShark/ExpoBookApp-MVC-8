@@ -14,6 +14,8 @@ namespace ExpoBookApp.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        public string Role { get; set; }
+
         [Required]
         [ComplexPassword]
         public string PasswordHash { get; set; }

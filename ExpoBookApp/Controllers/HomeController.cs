@@ -20,7 +20,12 @@ namespace ExpoBookApp.Controllers
         }
 
         [Authorize]
-        public IActionResult Privacy()
+        public IActionResult BrowseEvent()
+        {
+            return View();
+        }
+
+        public IActionResult ContactUs()
         {
             return View();
         }

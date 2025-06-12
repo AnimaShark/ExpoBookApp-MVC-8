@@ -1,0 +1,56 @@
+﻿@model ExpoBookApp.Models.Event;
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="EventName" class="control-label"></label>
+        <input asp-for="EventName" class="form-control" />
+        <span asp-validation-for="EventName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Theme" class="control-label"></label>
+        <input asp-for="Theme" class="form-control" />
+        <span asp-validation-for="Theme" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Venue" class="control-label"></label>
+        <input asp-for="Venue" class="form-control" />
+        <span asp-validation-for="Venue" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StartDate" class="control-label"></label>
+        <input asp-for="StartDate" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="EndDate" class="control-label"></label>
+        <input asp-for="EndDate" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TicketPrice" class="control-label"></label>
+        <input asp-for="TicketPrice" class="form-control" />
+        <span asp-validation-for="TicketPrice" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TicketQuota" class="control-label"></label>
+        <input asp-for="TicketQuota" class="form-control" />
+        <span asp-validation-for="TicketQuota" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

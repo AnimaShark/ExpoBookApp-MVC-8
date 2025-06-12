@@ -1,0 +1,84 @@
+﻿@model ExpoBookApp.Models.EventIndexViewModel;
+
+@{
+    ViewData["Title"] = "Events Overview";
+}
+
+<h2>Upcoming Events</h2>
+@if (!Model.UpcomingEvents.Any())
+{
+    <p>No upcoming events.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Theme</th>
+                <th>Venue</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ev in Model.UpcomingEvents)
+            {
+                <tr>
+                    <td>@ev.EventName</td>
+                    <td>@ev.Theme</td>
+                    <td>@ev.Venue</td>
+                    <td>@ev.StartDate.ToShortDateString()</td>
+                    <td>@ev.EndDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+
+<h2>All Events</h2>
+
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <label for="themeFilter">Filter by Theme:</label>
+    <select name="themeFilter" id="themeFilter" class="form-control mx-2" onchange="this.form.submit()">
+        <option value="">All</option>
+        @foreach (var theme in Model.Themes)
+        {
+            <option value="@theme" selected="@(theme == Model.ThemeFilter)">
+                @theme
+            </option>
+        }
+    </select>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Theme</th>
+            <th>Venue</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ev in Model.AllEvents)
+        {
+            <tr>
+                <td>@ev.EventName</td>
+                <td>@ev.Theme</td>
+                <td>@ev.Venue</td>
+                <td>@ev.StartDate.ToShortDateString()</td>
+                <td>@ev.EndDate.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -16,4 +16,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Participant\" />
+    <Folder Include="Views\Leaser\" />
+  </ItemGroup>
+
 </Project>

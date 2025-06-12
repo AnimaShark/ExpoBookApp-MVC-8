@@ -10,5 +10,7 @@ namespace ExpoBookApp.Models
         public DbSet<User> Users { get; set; }
 
         public DbSet<PasswordHistory> PasswordHistories { get; set; }
+
+        public DbSet<Event> Events { get; set; }
     }
 }
