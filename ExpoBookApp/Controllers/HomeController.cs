@@ -8,10 +8,12 @@ namespace ExpoBookApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
+            _context = context; 
         }
 
         public IActionResult Index()
@@ -19,10 +21,37 @@ namespace ExpoBookApp.Controllers
             return View();
         }
 
-        [Authorize]
-        public IActionResult BrowseEvent()
+        public IActionResult BrowseEvent(string themeFilter = null)
         {
-            return View();
+            var today = DateTime.Today;
+
+            // Upcoming events - those that haven't started yet
+            var upcomingEvents = _context.Events
+                .Where(e => e.StartDate >= today)
+                .OrderBy(e => e.StartDate)
+                .Take(5) // Optional: Limit to 5
+                .ToList();
+
+            // All events (optionally filtered by theme)
+            var allEvents = string.IsNullOrEmpty(themeFilter)
+                ? _context.Events.ToList()
+                : _context.Events.Where(e => e.Theme == themeFilter).ToList();
+
+            // Unique theme list for filtering
+            var themes = _context.Events
+                .Select(e => e.Theme)
+                .Distinct()
+                .ToList();
+
+            var viewModel = new EventIndexViewModel
+            {
+                UpcomingEvents = upcomingEvents,
+                AllEvents = allEvents,
+                ThemeFilter = themeFilter,
+                Themes = themes
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult ContactUs()

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ExpoBookApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpoBookApp.Controllers
 {
@@ -47,8 +49,8 @@ namespace ExpoBookApp.Controllers
             return View(viewModel);
         }
 
-        // GET: /Event/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: /Event/Detail/5
+        public async Task<IActionResult> Detail(int? id)
         {
             if (id == null)
                 return NotFound();
@@ -60,6 +62,7 @@ namespace ExpoBookApp.Controllers
             return View(@event);
         }
 
+        [Authorize]
         // GET: /Event/Create
         public IActionResult Create()
         {
@@ -80,6 +83,7 @@ namespace ExpoBookApp.Controllers
             return View(@event);
         }
 
+        [Authorize]
         // GET: /Event/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -120,6 +124,7 @@ namespace ExpoBookApp.Controllers
             return View(@event);
         }
 
+        [Authorize]
         // GET: /Event/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

@@ -22,14 +22,14 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var ev in Model.UpcomingEvents)
+            @foreach (var item in Model.UpcomingEvents)
             {
                 <tr>
-                    <td>@ev.EventName</td>
-                    <td>@ev.Theme</td>
-                    <td>@ev.Venue</td>
-                    <td>@ev.StartDate.ToShortDateString()</td>
-                    <td>@ev.EndDate.ToShortDateString()</td>
+                    <td>@item.EventName</td>
+                    <td>@item.Theme</td>
+                    <td>@item.Venue</td>
+                    <td>@item.StartDate.ToShortDateString()</td>
+                    <td>@item.EndDate.ToShortDateString()</td>
                 </tr>
             }
         </tbody>
@@ -65,18 +65,18 @@ else
         </tr>
     </thead>
     <tbody>
-        @foreach (var ev in Model.AllEvents)
+        @foreach (var item in Model.AllEvents)
         {
             <tr>
-                <td>@ev.EventName</td>
-                <td>@ev.Theme</td>
-                <td>@ev.Venue</td>
-                <td>@ev.StartDate.ToShortDateString()</td>
-                <td>@ev.EndDate.ToShortDateString()</td>
+                <td>@item.EventName</td>
+                <td>@item.Theme</td>
+                <td>@item.Venue</td>
+                <td>@item.StartDate.ToShortDateString()</td>
+                <td>@item.EndDate.ToShortDateString()</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Edit" asp-route-id="@ev.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-sm btn-danger">Delete</a>
+                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }
