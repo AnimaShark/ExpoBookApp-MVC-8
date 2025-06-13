@@ -29,7 +29,7 @@ namespace ExpoBookApp.Controllers
 
         // POST: /Account/Register
         [HttpPost]
-        public async Task<IActionResult> Register(string email, string password)
+        public async Task<IActionResult> Register(string email, string password, string role)
         {
             if (_context.Users.Where(u => u.Email == email).Any())
             {
@@ -42,12 +42,42 @@ namespace ExpoBookApp.Controllers
                 Email = email
             };
             user.PasswordHash = _passwordHasher.HashPassword(user, password);
+            user.Role = role;
 
+           // Generate token
+            var token = Guid.NewGuid().ToString();
+            user.EmailConfirmationToken = token;
             _context.Users.Add(user);
+            user.IsEmailConfirmed = false; // Ensure email confirmation is required
+            await _context.SaveChangesAsync();
+
+            // Send activation link
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { token }, Request.Scheme);
+            await _emailService.SendActivationEmail(email, token);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Login");
         }
+
+
+        // Account/ConfirmEmail
+        public IActionResult ConfirmEmail(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Invalid confirmation token.");
+
+            var user = _context.Users.FirstOrDefault(u => u.EmailConfirmationToken == token);
+
+            if (user == null)
+                return NotFound("User not found or token invalid.");
+
+            user.IsEmailConfirmed = true;
+            user.EmailConfirmationToken = null;
+            _context.SaveChanges();
+
+            return View("ConfirmEmail"); 
+        }
+
 
         // GET: /Account/Login
         [HttpGet]
@@ -61,6 +91,11 @@ namespace ExpoBookApp.Controllers
             if (user == null)
             {
                 ModelState.AddModelError("Login", "Invalid login attempt.");
+                return View();
+            }
+            if (!user.IsEmailConfirmed)
+            {
+                ModelState.AddModelError("", "Please confirm your email before logging in.");
                 return View();
             }
 

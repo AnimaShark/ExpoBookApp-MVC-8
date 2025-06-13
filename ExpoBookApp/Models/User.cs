@@ -5,27 +5,24 @@ namespace ExpoBookApp.Models
 {
     public class User
     {
-        /// <summary>
-        /// User Details
-        /// </summary>
+        /// User Attributes
         public int Id { get; set; }
 
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-
         public string Role { get; set; }
 
         [Required]
         [ComplexPassword]
         public string PasswordHash { get; set; }
 
-        /// <summary>
         /// Password Reset Attribute
-        /// </summary>
         public string? PasswordResetToken { get; set; }
-
         public DateTime? TokenExpiry { get; set; }
 
+        ///Account Activation Attribute
+        public bool IsEmailConfirmed { get; set; } = false;
+        public string? EmailConfirmationToken { get; set; }
     }
 }
