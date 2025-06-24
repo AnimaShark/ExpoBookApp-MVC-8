@@ -11,6 +11,7 @@ namespace ExpoBookApp.Models
         [Required]
         public string EventName { get; set; }
         public string EventType { get; set; }
+        public string? Description { get; set; } = null;
         public string Venue { get; set; }
         [Required]
         public DateTime StartDate { get; set; }

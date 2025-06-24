@@ -6,7 +6,7 @@
 }
 
 <h2>Create</h2>
-
+<br />
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -17,17 +17,36 @@
     </div> <br />*@
     
     <div class="form-group">
-        <label asp-for="EventName" class="control-label fw-bold"></label>
+        <span asp-for="EventName" class="form-label fw-bold">Name of the Event</span>
         <input asp-for="EventName" class="form-control" />
         <span asp-validation-for="EventName" class="text-danger"></span>
-    </div>
+    </div><br />
     <div class="form-group">
-        <label asp-for="EventType" class="control-label fw-bold"></label>
-        <input asp-for="EventType" class="form-control" />
+        <span asp-for="EventType" class="form-label fw-bold">Type of Event</span>
+        <select asp-for="EventType" class="form-control">
+            <option value="Competition">Competition-</option>
+            <option value="Conference">Conference-</option>
+            <option value="Convention">Convention-</option>
+            <option value="Exhibition">Exhibition-</option>
+            <option value="Fair">Fair-</option>
+            <option value="Festival">Festival</option>
+            <option value="Meetup">Meetup</option>
+            <option value="Other">Other</option>
+            <option value="ThemedEvent">Themed Event</option>
+            <option value="Webinar">Webinar</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Others">Others</option>
+        </select>
         <span asp-validation-for="EventType" class="text-danger"></span>
-    </div>
+    </div><br />
     <div class="form-group">
-        <label asp-for="Venue" class="control-label fw-bold"></label>
+        <span asp-for="Description" class="form-label fw-bold">Event Description</span>
+        <textarea asp-for="Description" class="form-control" aria-label="Event Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+        <p class="text-muted">Max. 5000 characters</p>
+    </div><br />
+    <div class="form-group">
+        <span asp-for="Venue" class="form-label fw-bold">Location</span>
         <select asp-for="Venue" class="form-control"> 
             <option value="">-- Select a venue --</option>
             <option value="testvenue">TestVenue-</option>
@@ -37,12 +56,12 @@
 
     <div class="d-flex justify-content-between" id="DateSection">
         <div class="form-group me-3 w-50">
-            <label asp-for="StartDate" class="control-label fw-bold"></label>
+            <span asp-for="StartDate" class="form-label fw-bold">Start date of Event</span>
             <input asp-for="StartDate" class="form-control" />
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
         <div class="form-group w-50">
-            <label asp-for="EndDate" class="control-label fw-bold"></label>
+            <span asp-for="EndDate" class="form-label fw-bold">End date of Event</span>
             <input asp-for="EndDate" class="form-control" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
@@ -55,15 +74,14 @@
 
     <div class="form-group d-flex justify-content-between" id="priceQuotaSection">
         <div class="form-group me-3 w-50">
-            <label asp-for="TicketPrice" class="fw-bold"></label>
-            <div class="input-group mb-5">
-                <span class="input-group-text">RM</span>
+            <div class="form-group mb-5">
+                <span class="form-label fw-bold">Price Ticket/Pax (RM)</span>
                 <input asp-for="TicketPrice" id="TicketPrice" class="form-control" aria-label="Amount (Min RM1)" />
                 <span asp-validation-for="TicketPrice" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group w-50">
-            <label asp-for="TicketQuota" class="fw-bold"></label>
+            <span class="form-label fw-bold">Ticket Cap</span>
             <input asp-for="TicketQuota" id="TicketQuota" class="form-control" />
             <span asp-validation-for="TicketQuota" class="text-danger"></span>
         </div>
