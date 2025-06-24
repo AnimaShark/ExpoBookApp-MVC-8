@@ -1,28 +1,148 @@
-﻿@model ExpoBookApp.Models.EventIndexViewModel;
+﻿@*@model IEnumerable<ExpoBookApp.Models.Event>*@
+@model ExpoBookApp.Models.EventIndexViewModel;
+
+<h2>My Events</h2>
 
 @{
-    ViewData["Title"] = "Events Overview";
+    var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 }
 
-<h2>Upcoming Events</h2>
-@if (!Model.UpcomingEvents.Any())
+@if (role == "Organizer")
 {
-    <p>No upcoming events.</p>
+    <p>Welcome Organizer. Here are your created events:</p>
+    <h4>Upcoming Event</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item1 in Model.CreatedUpcomingEvents.Take(3))
+        {
+            <div class="col">
+                <div class="card h-50">
+                    <img src="@item1.ImagePath" class="card-img-top" alt="@item1.EventName" style="max-height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@item1.EventName</h5>
+                        <p class="card-text">
+                            Theme: @item1.Theme <br />
+                            Venue: @item1.Venue <br />
+                            Dates: @item1.StartDate.ToShortDateString() - @item1.EndDate.ToShortDateString() <br />
+                            Ticket: RM @item1.TicketPrice <br />
+                            Bought: @item1.TicketBought / @item1.TicketQuota
+                        </p>
+                        <a asp-action="Detail" asp-route-id="@item1.Id" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h4>Event Created</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>Theme</th>
+                <th>Venue</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Ticket Price</th>
+                <th>Tickets Sold</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CreatedEvents)
+            {
+                <tr>
+                    <td>@item.EventName</td>
+                    <td>@item.Theme</td>
+                    <td>@item.Venue</td>
+                    <td>@item.StartDate.ToString("dd MMM yyyy")</td>
+                    <td>@item.EndDate.ToString("dd MMM yyyy")</td>
+                    <td>RM @item.TicketPrice</td>
+                    <td>@item.TicketBought / @item.TicketQuota</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-else
+else if (role == "Leaser")
 {
-    <table class="table table-striped">
+    <p>Welcome Venue Leaser. Events needing your attention:</p>
+    <!-- leaser page here -->
+}
+else if (role == "Participants")
+{
+    <p>Welcome Participant! Join these events:</p>
+
+    <h2>Upcoming Events</h2>
+    @if (!Model.UpcomingEvents.Any())
+    {
+        <p>No upcoming events.</p>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Theme</th>
+                    <th>Venue</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Price</th>
+                    <th>Organizer</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.UpcomingEvents)
+                {
+                    <tr>
+                        <td>@item.EventName</td>
+                        <td>@item.Theme</td>
+                        <td>@item.Venue</td>
+                        <td>@item.StartDate.ToShortDateString()</td>
+                        <td>@item.EndDate.ToShortDateString()</td>
+                        <td>RM @item.TicketPrice</td>
+                        <td>@item.CreatedBy?.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <hr />
+
+    <h2>All Events</h2>
+    <form asp-controller="Event" asp-action="Index" method="get" class="form-inline mb-3">
+        <label for="themeFilter">Filter by Theme:</label>
+        <select name="themeFilter" id="themeFilter" class="form-control mx-2" onchange="this.form.submit()">
+            <option value="">All</option>
+            @foreach (var theme in Model.Themes)
+            {
+                <option value="@theme" selected="@(theme == Model.ThemeFilter)">
+                    @theme
+                </option>
+            }
+        </select>
+    </form>
+
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Theme</th>
                 <th>Venue</th>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Price</th>
+                <th>Organizer</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.UpcomingEvents)
+            @foreach (var item in Model.AllEvents)
             {
                 <tr>
                     <td>@item.EventName</td>
@@ -30,55 +150,17 @@ else
                     <td>@item.Venue</td>
                     <td>@item.StartDate.ToShortDateString()</td>
                     <td>@item.EndDate.ToShortDateString()</td>
+                    <td>RM @item.TicketPrice</td>
+                    <td>@item.CreatedBy?.Email</td>
                 </tr>
             }
         </tbody>
     </table>
 }
+else
+{
+    <p>Unknown role or not authenticated.</p>
+}
 
-<hr />
 
-<h2>All Events</h2>
 
-<form asp-action="Index" method="get" class="form-inline mb-3">
-    <label for="themeFilter">Filter by Theme:</label>
-    <select name="themeFilter" id="themeFilter" class="form-control mx-2" onchange="this.form.submit()">
-        <option value="">All</option>
-        @foreach (var theme in Model.Themes)
-        {
-            <option value="@theme" selected="@(theme == Model.ThemeFilter)">
-                @theme
-            </option>
-        }
-    </select>
-</form>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Theme</th>
-            <th>Venue</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.AllEvents)
-        {
-            <tr>
-                <td>@item.EventName</td>
-                <td>@item.Theme</td>
-                <td>@item.Venue</td>
-                <td>@item.StartDate.ToShortDateString()</td>
-                <td>@item.EndDate.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

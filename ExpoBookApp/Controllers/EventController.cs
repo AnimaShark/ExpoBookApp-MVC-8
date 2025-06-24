@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ExpoBookApp.Models;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using ExpoBookApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ExpoBookApp.Controllers
 {
@@ -15,38 +15,60 @@ namespace ExpoBookApp.Controllers
             _context = context;
         }
 
+        [Authorize]
         // GET: /Event/
         public IActionResult Index(string themeFilter = null)
         {
-            var today = DateTime.Today;
+            var userEmail = User.Identity?.Name;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            // Upcoming events - those that haven't started yet
-            var upcomingEvents = _context.Events
-                .Where(e => e.StartDate >= today)
-                .OrderBy(e => e.StartDate)
-                .Take(5) // Optional: Limit to 5
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized();
+            }
+
+            var vm = new EventIndexViewModel();
+
+            // Only show events created by the organizer
+            vm.CreatedEvents = _context.Events
+                .Where(e => e.CreatedBy.Email == userEmail)
                 .ToList();
 
-            // All events (optionally filtered by theme)
-            var allEvents = string.IsNullOrEmpty(themeFilter)
-                ? _context.Events.ToList()
-                : _context.Events.Where(e => e.Theme == themeFilter).ToList();
+            var now = DateTime.UtcNow;
 
-            // Unique theme list for filtering
-            var themes = _context.Events
+            // Only show upcomming events created by the organizer
+            vm.CreatedUpcomingEvents = _context.Events
+                .Where(e => e.CreatedBy.Email == userEmail && e.StartDate > now)
+                .OrderBy(e => e.StartDate)
+                .ToList();
+            
+            // List of upcoming events
+            vm.UpcomingEvents = _context.Events
+                .Include(e => e.CreatedBy)
+                .Where(e => e.StartDate > now)
+                .OrderBy(e => e.StartDate)
+                .Take(5)
+                .ToList();
+
+            // List of all events (optionally filtered by theme)
+            var allEventsQuery = _context.Events.AsQueryable();
+
+            if (!string.IsNullOrEmpty(themeFilter))
+            {
+                allEventsQuery = allEventsQuery.Where(e => e.Theme == themeFilter);
+            }
+
+            vm.AllEvents = allEventsQuery.ToList();
+
+            // Themes for dropdown filter
+            vm.Themes = _context.Events
                 .Select(e => e.Theme)
                 .Distinct()
                 .ToList();
 
-            var viewModel = new EventIndexViewModel
-            {
-                UpcomingEvents = upcomingEvents,
-                AllEvents = allEvents,
-                ThemeFilter = themeFilter,
-                Themes = themes
-            };
+            vm.ThemeFilter = themeFilter;
 
-            return View(viewModel);
+            return View(vm);
         }
 
         // GET: /Event/Detail/5
@@ -72,10 +94,56 @@ namespace ExpoBookApp.Controllers
         // POST: /Event/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Event @event)
+        public async Task<IActionResult> Create(Event @event, IFormFile ImageFile)
         {
+            ModelState.Remove("ImageFile");
+
             if (ModelState.IsValid)
             {
+                var userEmail = User.Identity.Name; // assuming email is stored in cookie
+                var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+                if (user == null) return Unauthorized();
+
+                @event.CreatedByUserId = user.Id; // Set the creator of the event
+
+                //Check if the event name is already taken
+                if (_context.Events.Any(e => e.EventName == @event.EventName && e.CreatedByUserId == user.Id))
+                {
+                    ModelState.AddModelError("EventName", "An event with this name already exists.");
+                    return View(@event);
+                }
+
+                //Date validation
+                if (@event.EndDate < @event.StartDate)
+                {
+                    ModelState.AddModelError("EndDate", "End date must be after the start date.");
+                    return View(@event);
+                }
+
+                //Free event to mark as public event
+                if (@event.TicketPrice == 0 && @event.TicketQuota > 0)
+                {
+                    @event.IsPublic = true;
+                }
+
+                //Image check and save
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                    if (!Directory.Exists(uploadsFolder))
+                        Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+
+                    @event.ImagePath = "/images/" + uniqueFileName;
+                }
+
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -102,6 +170,29 @@ namespace ExpoBookApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Event @event)
         {
+            var userEmail = User.Identity.Name; // assuming email is stored in cookie
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            if (user == null) return Unauthorized();
+
+            @event.CreatedByUserId = user.Id;
+
+            //Check if the event name is already taken
+            if (_context.Events.Any(e => 
+                                    e.EventName == @event.EventName && 
+                                    e.CreatedByUserId == user.Id &&
+                                    e.Id != @event.Id))
+            {
+                ModelState.AddModelError("EventName", "An event with this name already exists.");
+                return View(@event);
+            }
+
+            //Date validation
+            if (@event.EndDate < @event.StartDate)
+            {
+                ModelState.AddModelError("EndDate", "End date must be after the start date.");
+                return View(@event);
+            }
+
             if (id != @event.Id)
                 return NotFound();
 

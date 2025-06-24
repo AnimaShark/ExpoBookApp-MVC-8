@@ -1,5 +1,6 @@
 ﻿@model ExpoBookApp.Models.Event;
 
+
 @{
     ViewBag.Title = "Create";
 }
@@ -9,48 +10,57 @@
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+    @* <div id="drop-area" class="border p-4 text-center bg-light" style="cursor: pointer;">
+        <p>Drag & drop your event image here or click to select a file!</p>
+        <input type="file" name="ImageFile" id="ImageFile" accept="image/*" class="d-none" />
+        <img id="preview" src="#" alt="Image Preview" style="display:none; max-height:200px; margin-top:10px;" />
+    </div> <br />*@
+    
     <div class="form-group">
-        <label asp-for="EventName" class="control-label"></label>
+        <label asp-for="EventName" class="control-label" style="font-weight: bold"></label>
         <input asp-for="EventName" class="form-control" />
         <span asp-validation-for="EventName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Theme" class="control-label"></label>
+        <label asp-for="Theme" class="control-label" style="font-weight: bold"></label>
         <input asp-for="Theme" class="form-control" />
         <span asp-validation-for="Theme" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Venue" class="control-label"></label>
+        <label asp-for="Venue" class="control-label" style="font-weight: bold"></label>
         <input asp-for="Venue" class="form-control" />
         <span asp-validation-for="Venue" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="StartDate" class="control-label"></label>
+    </div><br />
+
+    <div class="form-group" id="DateSection">
+        <label asp-for="StartDate" class="control-label" style="font-weight: bold"></label>
         <input asp-for="StartDate" class="form-control" />
         <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="EndDate" class="control-label"></label>
+        <br />
+        <label asp-for="EndDate" class="control-label" style="font-weight: bold"></label>
         <input asp-for="EndDate" class="form-control" />
         <span asp-validation-for="EndDate" class="text-danger"></span>
-    </div>
+    </div><br />
+
     <div class="form-group">
-        <label asp-for="TicketPrice" class="control-label"></label>
+        <label asp-for="IsPublic"></label>
+        <input asp-for="IsPublic" type="checkbox" class="form-check-input" id="IsPublicToggle" />
+    </div><br />
+
+    <div class="form-group" id="priceQuotaSection">
+        <label asp-for="TicketPrice"></label>
         <input asp-for="TicketPrice" class="form-control" />
         <span asp-validation-for="TicketPrice" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="TicketQuota" class="control-label"></label>
+        <br />
+        <label asp-for="TicketQuota"></label>
         <input asp-for="TicketQuota" class="form-control" />
         <span asp-validation-for="TicketQuota" class="text-danger"></span>
-    </div>
+    </div><br />
 
     <button type="submit" class="btn btn-primary">Create</button>
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="~/js/event-form.js"></script>
 }

@@ -17,8 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Participant\" />
     <Folder Include="Views\Leaser\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\event-form.js" />
   </ItemGroup>
 
 </Project>

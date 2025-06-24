@@ -1,12 +1,21 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     @if (User.Identity.IsAuthenticated)
     {
-        <p>Hello, @User.Identity.Name!</p>
+        <h4>Hello, @User.Identity.Name!</h4>
     }
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Welcome to ExpoBookApp!</a>.</p>
+    @if (role == "Organizer")
+    {
+        <p>To get started, click<a asp-controller = "Home" asp - action = "BrowseEvent" > Browse Events</a> or ><a asp-controller = "Event" asp - action = "Create" > Create an Event</a></p>
+    }
+    else
+    {
+        <p>To get started, click <a asp-controller="Home" asp-action="BrowseEvent">Browse Events</a> to explore upcoming events.</p>
+    }
 </div>

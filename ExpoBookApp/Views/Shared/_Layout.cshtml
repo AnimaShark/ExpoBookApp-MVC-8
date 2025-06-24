@@ -1,7 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
+@{
+    var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+}
 <head>
     <meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ExpoBookApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -22,19 +27,37 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @if (User.Identity.IsAuthenticated)
+                        @if (role == "Organizer")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Index">Browse Event</a>
                             </li>
                             <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Create">Create</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Create">Create Event</a>
+                            </li>
+                        }
+                        else if (role == "Leaser")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Venue" asp-action="Index">Venue</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Venue" asp-action="CreateVenue">List New Venue</a>
+                            </li>
+                        }
+                        else if (role == "Participants")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="BrowseEvent">Browse Event</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="MyTickets">My Ticket</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="BrowseEvent">Browse Event</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="BrowseEvent">Available Event</a>
                             </li>
                         }
                     </ul>
@@ -74,6 +97,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
