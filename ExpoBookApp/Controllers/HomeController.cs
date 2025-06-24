@@ -21,7 +21,7 @@ namespace ExpoBookApp.Controllers
             return View();
         }
 
-        public IActionResult BrowseEvent(string themeFilter = null)
+        public IActionResult BrowseEvent(string typeFilter = null)
         {
             var today = DateTime.Today;
 
@@ -33,13 +33,13 @@ namespace ExpoBookApp.Controllers
                 .ToList();
 
             // All events (optionally filtered by theme)
-            var allEvents = string.IsNullOrEmpty(themeFilter)
+            var allEvents = string.IsNullOrEmpty(typeFilter)
                 ? _context.Events.ToList()
-                : _context.Events.Where(e => e.Theme == themeFilter).ToList();
+                : _context.Events.Where(e => e.EventType == typeFilter).ToList();
 
             // Unique theme list for filtering
-            var themes = _context.Events
-                .Select(e => e.Theme)
+            var eventType = _context.Events
+                .Select(e => e.EventType)
                 .Distinct()
                 .ToList();
 
@@ -47,8 +47,8 @@ namespace ExpoBookApp.Controllers
             {
                 UpcomingEvents = upcomingEvents,
                 AllEvents = allEvents,
-                ThemeFilter = themeFilter,
-                Themes = themes
+                TypeFilter = typeFilter,
+                EventType = eventType
             };
 
             return View(viewModel);

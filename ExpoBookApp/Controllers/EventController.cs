@@ -17,7 +17,7 @@ namespace ExpoBookApp.Controllers
 
         [Authorize]
         // GET: /Event/
-        public IActionResult Index(string themeFilter = null)
+        public IActionResult Index(string typeFilter = null)
         {
             var userEmail = User.Identity?.Name;
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
@@ -53,20 +53,20 @@ namespace ExpoBookApp.Controllers
             // List of all events (optionally filtered by theme)
             var allEventsQuery = _context.Events.AsQueryable();
 
-            if (!string.IsNullOrEmpty(themeFilter))
+            if (!string.IsNullOrEmpty(typeFilter))
             {
-                allEventsQuery = allEventsQuery.Where(e => e.Theme == themeFilter);
+                allEventsQuery = allEventsQuery.Where(e => e.EventType == typeFilter);
             }
 
             vm.AllEvents = allEventsQuery.ToList();
 
-            // Themes for dropdown filter
-            vm.Themes = _context.Events
-                .Select(e => e.Theme)
+            // Event Type for dropdown filter
+            vm.EventType = _context.Events
+                .Select(e => e.EventType)
                 .Distinct()
                 .ToList();
 
-            vm.ThemeFilter = themeFilter;
+            vm.TypeFilter = typeFilter;
 
             return View(vm);
         }
@@ -104,6 +104,8 @@ namespace ExpoBookApp.Controllers
                 var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
                 if (user == null) return Unauthorized();
 
+                var today = DateTime.UtcNow;
+
                 @event.CreatedByUserId = user.Id; // Set the creator of the event
 
                 //Check if the event name is already taken
@@ -114,9 +116,17 @@ namespace ExpoBookApp.Controllers
                 }
 
                 //Date validation
+                //Check if end date is not before start date
                 if (@event.EndDate < @event.StartDate)
                 {
                     ModelState.AddModelError("EndDate", "End date must be after the start date.");
+                    return View(@event);
+                }
+
+                //Check if the event is in the past
+                if (@event.StartDate < today)
+                {
+                    ModelState.AddModelError("StartDate", "Start date must be after today.");
                     return View(@event);
                 }
 
@@ -174,6 +184,8 @@ namespace ExpoBookApp.Controllers
             var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
             if (user == null) return Unauthorized();
 
+            var today = DateTime.UtcNow;
+
             @event.CreatedByUserId = user.Id;
 
             //Check if the event name is already taken
@@ -192,6 +204,12 @@ namespace ExpoBookApp.Controllers
                 ModelState.AddModelError("EndDate", "End date must be after the start date.");
                 return View(@event);
             }
+            if (@event.StartDate < today)
+            {
+                ModelState.AddModelError("StartDate", "Start date must be after today.");
+                return View(@event);
+            }
+
 
             if (id != @event.Id)
                 return NotFound();

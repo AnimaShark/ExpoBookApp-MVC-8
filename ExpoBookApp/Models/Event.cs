@@ -10,7 +10,7 @@ namespace ExpoBookApp.Models
         public int Id { get; set; }
         [Required]
         public string EventName { get; set; }
-        public string Theme { get; set; }
+        public string EventType { get; set; }
         public string Venue { get; set; }
         [Required]
         public DateTime StartDate { get; set; }
@@ -25,6 +25,9 @@ namespace ExpoBookApp.Models
 
         //Marking for public event
         public bool IsPublic { get; set; } = false;
+
+        //Marking for online event
+        public bool IsOnline { get; set; } = false;
 
         //Image for the event
         public string? ImagePath { get; set; }

@@ -5,12 +5,12 @@
 <div class="card">
     <div class="card-body">
         <h4 class="card-title">@Model.EventName</h4>
-        <p class="card-text"><strong>Theme:</strong> @Model.Theme</p>
-        <p class="card-text"><strong>Venue:</strong> @Model.Venue</p>
+        <p class="card-text"><strong>Type of Event:</strong> @Model.EventType</p>
+        <p class="card-text"><strong>Location:</strong> @Model.Venue</p>
         <p class="card-text"><strong>Start:</strong> @Model.StartDate.ToString("g")</p>
         <p class="card-text"><strong>End:</strong> @Model.EndDate.ToString("g")</p>
-        <p class="card-text"><strong>Ticket Price:</strong> @Model.TicketPrice.ToString("C")</p>
-        <p class="card-text"><strong>Tickets:</strong> @Model.TicketBought / @Model.TicketQuota</p>
+        <p class="card-text"><strong>Price (Ticket per pax):</strong> @Model.TicketPrice.ToString("C")</p>
+        <p class="card-text"><strong>Attendance:</strong> @Model.TicketBought / @Model.TicketQuota</p>
     </div>
 </div>
 

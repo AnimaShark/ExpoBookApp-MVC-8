@@ -20,7 +20,7 @@
                     <div class="card-body">
                         <h5 class="card-title">@item1.EventName</h5>
                         <p class="card-text">
-                            Theme: @item1.Theme <br />
+                            Theme: @item1.EventType <br />
                             Venue: @item1.Venue <br />
                             Dates: @item1.StartDate.ToShortDateString() - @item1.EndDate.ToShortDateString() <br />
                             Ticket: RM @item1.TicketPrice <br />
@@ -38,7 +38,7 @@
         <thead>
             <tr>
                 <th>Event Name</th>
-                <th>Theme</th>
+                <th>EventType</th>
                 <th>Venue</th>
                 <th>Start Date</th>
                 <th>End Date</th>
@@ -52,7 +52,7 @@
             {
                 <tr>
                     <td>@item.EventName</td>
-                    <td>@item.Theme</td>
+                    <td>@item.EventType</td>
                     <td>@item.Venue</td>
                     <td>@item.StartDate.ToString("dd MMM yyyy")</td>
                     <td>@item.EndDate.ToString("dd MMM yyyy")</td>
@@ -88,7 +88,7 @@ else if (role == "Participants")
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Theme</th>
+                    <th>EventType</th>
                     <th>Venue</th>
                     <th>Start Date</th>
                     <th>End Date</th>
@@ -101,7 +101,7 @@ else if (role == "Participants")
                 {
                     <tr>
                         <td>@item.EventName</td>
-                        <td>@item.Theme</td>
+                        <td>@item.EventType</td>
                         <td>@item.Venue</td>
                         <td>@item.StartDate.ToShortDateString()</td>
                         <td>@item.EndDate.ToShortDateString()</td>
@@ -117,13 +117,13 @@ else if (role == "Participants")
 
     <h2>All Events</h2>
     <form asp-controller="Event" asp-action="Index" method="get" class="form-inline mb-3">
-        <label for="themeFilter">Filter by Theme:</label>
-        <select name="themeFilter" id="themeFilter" class="form-control mx-2" onchange="this.form.submit()">
+        <label for="TypeFilter">Filter by Type:</label>
+        <select name="TypeFilter" id="TypeFilter" class="form-control mx-2" onchange="this.form.submit()">
             <option value="">All</option>
-            @foreach (var theme in Model.Themes)
+            @foreach (var eventType in Model.EventType)
             {
-                <option value="@theme" selected="@(theme == Model.ThemeFilter)">
-                    @theme
+                <option value="@eventType" selected="@(eventType == Model.TypeFilter)">
+                    @eventType
                 </option>
             }
         </select>
@@ -133,7 +133,7 @@ else if (role == "Participants")
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Theme</th>
+                <th>EventType</th>
                 <th>Venue</th>
                 <th>Start</th>
                 <th>End</th>
@@ -146,7 +146,7 @@ else if (role == "Participants")
             {
                 <tr>
                     <td>@item.EventName</td>
-                    <td>@item.Theme</td>
+                    <td>@item.EventType</td>
                     <td>@item.Venue</td>
                     <td>@item.StartDate.ToShortDateString()</td>
                     <td>@item.EndDate.ToShortDateString()</td>

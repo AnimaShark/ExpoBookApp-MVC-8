@@ -17,50 +17,63 @@
     </div> <br />*@
     
     <div class="form-group">
-        <label asp-for="EventName" class="control-label" style="font-weight: bold"></label>
+        <label asp-for="EventName" class="control-label fw-bold"></label>
         <input asp-for="EventName" class="form-control" />
         <span asp-validation-for="EventName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Theme" class="control-label" style="font-weight: bold"></label>
-        <input asp-for="Theme" class="form-control" />
-        <span asp-validation-for="Theme" class="text-danger"></span>
+        <label asp-for="EventType" class="control-label fw-bold"></label>
+        <input asp-for="EventType" class="form-control" />
+        <span asp-validation-for="EventType" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Venue" class="control-label" style="font-weight: bold"></label>
-        <input asp-for="Venue" class="form-control" />
+        <label asp-for="Venue" class="control-label fw-bold"></label>
+        <select asp-for="Venue" class="form-control"> 
+            <option value="">-- Select a venue --</option>
+            <option value="testvenue">TestVenue-</option>
+        </select>
         <span asp-validation-for="Venue" class="text-danger"></span>
     </div><br />
 
-    <div class="form-group" id="DateSection">
-        <label asp-for="StartDate" class="control-label" style="font-weight: bold"></label>
-        <input asp-for="StartDate" class="form-control" />
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-        <br />
-        <label asp-for="EndDate" class="control-label" style="font-weight: bold"></label>
-        <input asp-for="EndDate" class="form-control" />
-        <span asp-validation-for="EndDate" class="text-danger"></span>
+    <div class="d-flex justify-content-between" id="DateSection">
+        <div class="form-group me-3 w-50">
+            <label asp-for="StartDate" class="control-label fw-bold"></label>
+            <input asp-for="StartDate" class="form-control" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group w-50">
+            <label asp-for="EndDate" class="control-label fw-bold"></label>
+            <input asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
     </div><br />
 
-    <div class="form-group">
-        <label asp-for="IsPublic"></label>
+    <div class="form-group form-check form-switch" >
+        <label asp-for="IsPublic" class="form-check-label fw-bold">Free Public Event?</label>
         <input asp-for="IsPublic" type="checkbox" class="form-check-input" id="IsPublicToggle" />
     </div><br />
 
-    <div class="form-group" id="priceQuotaSection">
-        <label asp-for="TicketPrice"></label>
-        <input asp-for="TicketPrice" class="form-control" />
-        <span asp-validation-for="TicketPrice" class="text-danger"></span>
-        <br />
-        <label asp-for="TicketQuota"></label>
-        <input asp-for="TicketQuota" class="form-control" />
-        <span asp-validation-for="TicketQuota" class="text-danger"></span>
+    <div class="form-group d-flex justify-content-between" id="priceQuotaSection">
+        <div class="form-group me-3 w-50">
+            <label asp-for="TicketPrice" class="fw-bold"></label>
+            <div class="input-group mb-5">
+                <span class="input-group-text">RM</span>
+                <input asp-for="TicketPrice" id="TicketPrice" class="form-control" aria-label="Amount (Min RM1)" />
+                <span asp-validation-for="TicketPrice" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group w-50">
+            <label asp-for="TicketQuota" class="fw-bold"></label>
+            <input asp-for="TicketQuota" id="TicketQuota" class="form-control" />
+            <span asp-validation-for="TicketQuota" class="text-danger"></span>
+        </div>
     </div><br />
+
 
     <button type="submit" class="btn btn-primary">Create</button>
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>
 
 @section Scripts {
-    <script src="~/js/event-form.js"></script>
+    <script src="~/js/event-form.js" asp-append-version="true"></script>
 }
