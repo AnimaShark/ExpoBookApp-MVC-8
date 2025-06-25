@@ -136,23 +136,23 @@ namespace ExpoBookApp.Controllers
                     @event.IsPublic = true;
                 }
 
-                //Image check and save
-                if (ImageFile != null && ImageFile.Length > 0)
-                {
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-                    if (!Directory.Exists(uploadsFolder))
-                        Directory.CreateDirectory(uploadsFolder);
+                ////Image check and save
+                //if (ImageFile != null && ImageFile.Length > 0)
+                //{
+                //    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                //    if (!Directory.Exists(uploadsFolder))
+                //        Directory.CreateDirectory(uploadsFolder);
 
-                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                //    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageFile.FileName);
+                //    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(stream);
-                    }
+                //    using (var stream = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        await ImageFile.CopyToAsync(stream);
+                //    }
 
-                    @event.ImagePath = "/images/" + uniqueFileName;
-                }
+                //    @event.ImagePath = "/images/" + uniqueFileName;
+                //}
 
                 _context.Add(@event);
                 await _context.SaveChangesAsync();

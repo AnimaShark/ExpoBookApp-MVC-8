@@ -1,13 +1,24 @@
 ﻿/*await Html.RenderPartialAsync("_ValidationScriptsPartial");*/
 
 // Toggle visibility of price and quota fields based on IsPublicToggle checkbox
-
 $(document).ready(function () {
     console.log("DOM ready");
 
     const toggle = $('#IsPublicToggle');
     const priceInput = $('#TicketPrice');
     const quotaInput = $('#TicketQuota');
+
+    // Disable submit button initially
+    $('#submitButton').prop('disabled', true);
+
+    // Enable/disable based on form validity
+    $('#eventForm').on('input change', function () {
+        if (this.checkValidity()) {
+            $('#submitButton').prop('disabled', false);
+        } else {
+            $('#submitButton').prop('disabled', true);
+        }
+    });
 
     function togglePriceQuota() {
         if (toggle.is(':checked')) {
@@ -27,42 +38,49 @@ $(document).ready(function () {
     togglePriceQuota();
 });
 
-//function togglePriceQuota() {
-//    const toggle = document.getElementById("IsPublicToggle");
-//    //const section = document.getElementById("priceQuotaSection");
-//    const ticketPrice = document.getElementById("TicketPrice");
-//    const ticketQuota = document.getElementById("TicketQuota");
+//Start date and end date validation
+$(document).ready(function () {
+    const $form = $('#eventForm');
+    const $start = $('#StartDate');
+    const $end = $('#EndDate');
+    const $submit = $('#submitButton');
 
-//    console.log("Toggle is:", toggle?.checked);
-//    if (!toggle || !section) {
-//        console.error("Toggle or section not found!");
-//        return;
-//    }
+    if ($form.length === 0 || $start.length === 0 || $end.length === 0) {
+        console.warn("Form or date fields not found.");
+        return;
+    }
 
-//    if (toggle.checked) {
-//        //section.classList.add("d-none");
-//        if (ticketPrice) ticketPrice.value = 0;
-//        if (ticketQuota) ticketQuota.value = 0;
-//        ticketPrice.readOnly = true;
-//        ticketQuota.readOnly = true;
-//        ticketPrice.classList.add("bg-light");
-//        ticketQuota.classList.add("bg-light");
-//    } else {
-//        //section.classList.remove("d-none");
-//        ticketPrice.readOnly = false;
-//        ticketQuota.readOnly = false;
-//        ticketPrice.classList.remove("bg-light");
-//        ticketQuota.classList.remove("bg-light");
-//    }
-//}
+    function validateDates() {
+        const start = new Date($start.val());
+        const end = new Date($end.val());
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-//$(document).ready(function () {
-//    togglePriceQuota(); /// Run on initial load
-//    const toggle = document.getElementById("IsPublicToggle");
-//    if (toggle) {
-//        toggle.addEventListener("change", togglePriceQuota); // On change
-//    }
-//});
+        let valid = true;
+        $start[0].setCustomValidity('');
+        $end[0].setCustomValidity('');
+
+        if ($end.val() && end < start) {
+            $end[0].setCustomValidity("End date must be after start date.");
+            valid = false;
+        }
+
+        if ($start.val() && start < today) {
+            $start[0].setCustomValidity("Start date must be after today.");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function toggleSubmit() {
+        const isValid = validateDates();
+        $submit.prop('disabled', !($form[0].checkValidity() && isValid));
+    }
+
+    $form.on('input change', toggleSubmit);
+        toggleSubmit(); // initial check
+});
 
 ////Image upload and preview functionality
 //$(function () {

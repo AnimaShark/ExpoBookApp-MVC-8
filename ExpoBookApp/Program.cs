@@ -25,6 +25,13 @@ builder.Services.AddScoped<PasswordService>();
 //Email Service
 builder.Services.AddScoped<EmailService>();
 
+//Enable client-side validation
+builder.Services.AddControllersWithViews()
+    .AddViewOptions(options =>
+    {
+        options.HtmlHelperOptions.ClientValidationEnabled = true;
+    });
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthorization();
 
