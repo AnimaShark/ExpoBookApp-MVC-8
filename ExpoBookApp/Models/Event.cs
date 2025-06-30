@@ -7,6 +7,7 @@ namespace ExpoBookApp.Models
 {
     public class Event
     {
+        /// Event Attributes
         public int Id { get; set; }
         [Required(ErrorMessage = "Event name is required")]
         [StringLength(100, ErrorMessage = "Maximum 100 characters")]
@@ -29,20 +30,21 @@ namespace ExpoBookApp.Models
         [Range(0, int.MaxValue, ErrorMessage = "Ticket quota cannot be negative.")]
         public int TicketQuota { get; set; }
 
+
+        //Image for the event
+        public string? ImagePath { get; set; }
+
         //MARKING
         //Event is public or private
         public bool IsPublic { get; set; } = false;
         //Event is online or offline
         public bool IsOnline { get; set; } = false;
 
-        //Image for the event
-        public string? ImagePath { get; set; }
-
         //References to Who created the event
         public int CreatedByUserId { get; set; }
         [ValidateNever]
         [ForeignKey("CreatedByUserId")]
         public User CreatedBy { get; set; }
-
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

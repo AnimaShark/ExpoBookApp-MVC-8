@@ -13,6 +13,18 @@ namespace ExpoBookApp.Models
 
         public DbSet<Event> Events { get; set; }
 
-        public DbSet<Venue> Venues { get; set; }
+        public DbSet<Venues> Venues { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            {
+                modelBuilder.Entity<Venues>()
+                    .Property(v => v.ApprovalStatus)
+                    .HasConversion<string>();
+
+                base.OnModelCreating(modelBuilder);
+            }
+        }
     }
 }
+

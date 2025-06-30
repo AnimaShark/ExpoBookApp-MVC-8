@@ -16,7 +16,7 @@ namespace ExpoBookApp.Controllers
         }
 
         [Authorize]
-        // GET: /Event/
+        // GET: /Event/Index
         public IActionResult Index(string typeFilter = null)
         {
             var userEmail = User.Identity?.Name;
@@ -31,6 +31,7 @@ namespace ExpoBookApp.Controllers
 
             // Only show events created by the organizer
             vm.CreatedEvents = _context.Events
+                .Include(e => e.CreatedBy)
                 .Where(e => e.CreatedBy.Email == userEmail)
                 .ToList();
 
@@ -38,6 +39,7 @@ namespace ExpoBookApp.Controllers
 
             // Only show upcomming events created by the organizer
             vm.CreatedUpcomingEvents = _context.Events
+                .Include(e => e.CreatedBy)
                 .Where(e => e.CreatedBy.Email == userEmail && e.StartDate > now)
                 .OrderBy(e => e.StartDate)
                 .ToList();
@@ -55,13 +57,16 @@ namespace ExpoBookApp.Controllers
 
             if (!string.IsNullOrEmpty(typeFilter))
             {
-                allEventsQuery = allEventsQuery.Where(e => e.EventType == typeFilter);
+                allEventsQuery = allEventsQuery
+                    .Where(e => e.EventType == typeFilter);
             }
-
-            vm.AllEvents = allEventsQuery.ToList();
+            vm.AllEvents = allEventsQuery
+                .Include(e => e.CreatedBy)
+                .ToList();
 
             // Event Type for dropdown filter
             vm.EventType = _context.Events
+                .Include(e => e.CreatedBy)
                 .Select(e => e.EventType)
                 .Distinct()
                 .ToList();

@@ -68,11 +68,11 @@
         </tbody>
     </table>
 }
-else if (role == "Leaser")
-{
+@* else if (role == "Leaser") //Leaser section is not needed in this context *@
+@*{
     <p>Welcome Venue Leaser. Events needing your attention:</p>
     <!-- leaser page here -->
-}
+} *@
 else if (role == "Participants")
 {
     <p>Welcome Participant! Join these events:</p>
@@ -106,7 +106,7 @@ else if (role == "Participants")
                         <td>@item.StartDate.ToShortDateString()</td>
                         <td>@item.EndDate.ToShortDateString()</td>
                         <td>RM @item.TicketPrice</td>
-                        <td>@item.CreatedBy?.Email</td>
+                        <td>@item.CreatedBy.Email</td>
                     </tr>
                 }
             </tbody>
@@ -151,7 +151,7 @@ else if (role == "Participants")
                     <td>@item.StartDate.ToShortDateString()</td>
                     <td>@item.EndDate.ToShortDateString()</td>
                     <td>RM @item.TicketPrice</td>
-                    <td>@item.CreatedBy?.Email</td>
+                    <td>@item.CreatedBy.Email</td>
                 </tr>
             }
         </tbody>

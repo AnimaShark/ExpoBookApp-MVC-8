@@ -1,8 +1,53 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ExpoBookApp.Models.Venues
+
 @{
+    ViewData["Title"] = "Create";
 }
-<p>
-    This is the Venue Create page. The page will allow the Venue Leaser to create a new venue listing.
-</p>
+
+<h1>Create</h1>
+
+<h4>Venue</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Venue Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Convention Centre" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Size" class="control-label">Venue Size (sq ft)</label>
+                <input asp-for="Size" class="form-control" placeholder="e.g 25460" required />
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label">Venue Address</label>
+                <textarea asp-for="Address" class="form-control" placeholder="Address" required></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StateCode" class="control-label">Post Code</label>
+                <input asp-for="StateCode" class="form-control" placeholder="e.g 58000" required />
+                <span asp-validation-for="StateCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="State" class="control-label">State</label>
+                <input asp-for="State" class="form-control" placeholder="Selangor" required />
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div><br />
+            <div class="form-group">
+                <input type="submit" value="Create Venue" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

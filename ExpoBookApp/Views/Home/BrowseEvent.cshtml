@@ -1,5 +1,5 @@
 ﻿@model ExpoBookApp.Models.EventIndexViewModel;
-
+@* @model IEnumerable<ExpoBookApp.Models.EventIndexViewModel> *@
 @{
     ViewData["Title"] = "Browse Event";
 }
@@ -19,7 +19,7 @@ else
                 <th>Venue</th>
                 <th>Start Date</th>
                 <th>End Date</th>
-                @*<th>Organizer</th>*@
+                <th>Organizer</th>
                 <th>Ticket Price</th>
             </tr>
         </thead>
@@ -32,7 +32,7 @@ else
                     <td>@item.Venue</td>
                     <td>@item.StartDate.ToShortDateString()</td>
                     <td>@item.EndDate.ToShortDateString()</td>
-                    @*<td>@item.CreatedBy</td>*@
+                    <td>@(item.CreatedBy != null ? item.CreatedBy.Email : "N/A")</td>
                     <td>RM @item.TicketPrice</td>
                 </tr>
             }
@@ -65,7 +65,7 @@ else
             <th>Venue</th>
             <th>Start</th>
             <th>End</th>
-            <!--Organizer row here-->
+            <th>Organizer</th>
             <th>Ticket Price</th>
         </tr>
     </thead>
@@ -78,7 +78,7 @@ else
                 <td>@item.Venue</td>
                 <td>@item.StartDate.ToShortDateString()</td>
                 <td>@item.EndDate.ToShortDateString()</td>
-                <!--Organizer column here-->
+                <td>@(item.CreatedBy != null ? item.CreatedBy.Email : "N/A")</td>
                 <td>RM @item.TicketPrice</td>
             </tr>
         }

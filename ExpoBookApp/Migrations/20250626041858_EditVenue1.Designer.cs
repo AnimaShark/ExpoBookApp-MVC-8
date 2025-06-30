@@ -4,6 +4,7 @@ using ExpoBookApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpoBookApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626041858_EditVenue1")]
+    partial class EditVenue1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,7 +147,7 @@ namespace ExpoBookApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ExpoBookApp.Models.Venues", b =>
+            modelBuilder.Entity("ExpoBookApp.Models.Venue", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,15 +159,11 @@ namespace ExpoBookApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ApprovalStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -199,7 +198,7 @@ namespace ExpoBookApp.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("ExpoBookApp.Models.Venues", b =>
+            modelBuilder.Entity("ExpoBookApp.Models.Venue", b =>
                 {
                     b.HasOne("ExpoBookApp.Models.User", "CreatedBy")
                         .WithMany()
