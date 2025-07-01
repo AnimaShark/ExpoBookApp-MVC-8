@@ -9,10 +9,12 @@ namespace ExpoBookApp.Controllers
     public class VenueController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public VenueController(AppDbContext context)
+        public VenueController(AppDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         [Authorize(Roles = "Leaser")]
@@ -40,19 +42,40 @@ namespace ExpoBookApp.Controllers
         // POST: Venue/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Venues venue)
-        {
+        public async Task<IActionResult> Create(Venues venue/*, IFormFile SupportDoc*/)
+        { 
             var user = _context.Users.FirstOrDefault(u => u.Email == User.Identity.Name);
             if (user == null) return Unauthorized();
 
             venue.CreatedByUserId = user.Id;
             venue.CreatedAt = DateTime.UtcNow;
             venue.ApprovalStatus = ApprovalStatus.Pending;
+            venue.SupportingDocumentPath = "n/a"; // Default value, Placeholder to be updated
 
             if (ModelState.IsValid)
             {
+                ////Supporting document upload
+                //if (SupportDoc != null && SupportDoc.Length > 0)
+                //{
+                //    var uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "uploads", "supporting-documents");
+                //    if (!Directory.Exists(uploadsFolder))
+                //        Directory.CreateDirectory(uploadsFolder);
+
+                //    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(SupportDoc.FileName)}";
+                //    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                //    using (var stream = new FileStream(filePath, FileMode.Create))
+                //    {
+                //        await SupportDoc.CopyToAsync(stream);
+                //    }
+
+                //    venue.SupportingDocumentPath = "/uplaods/" +  fileName;
+                //}
+
                 _context.Add(venue);
                 await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Venue created successfully and is pending approval.";
                 return RedirectToAction(nameof(Index));
             }
             return View(venue);
@@ -69,12 +92,6 @@ namespace ExpoBookApp.Controllers
             var @venue = await _context.Venues.FindAsync(id);
             if (@venue == null)
                 return NotFound();
-
-            if (venue.ApprovalStatus == ApprovalStatus.Approved)
-            {
-                ModelState.AddModelError("", "Approved venues cannot be edited.");
-                return RedirectToAction(nameof(Index));
-            }
 
             return View(@venue);
         }
@@ -106,9 +123,9 @@ namespace ExpoBookApp.Controllers
 
             //Maintain CreatedAt value to original
             venue.CreatedAt = _context.Venues.AsNoTracking().FirstOrDefault(v => v.Id == id)?.CreatedAt ?? DateTime.UtcNow;
+            venue.SupportingDocumentPath = "n/a";
 
-
-            venue.ApprovalStatus = ApprovalStatus.Pending;
+            venue.ApprovalStatus = ApprovalStatus.Pending; //Set status to pending when editing to be approved again
 
             if (ModelState.IsValid)
             {
@@ -130,9 +147,9 @@ namespace ExpoBookApp.Controllers
             return View(venue);
         }
 
-        // GET: Venue/Details
+        // GET: Venue/Detail
         [Authorize(Roles = "Leaser")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Detail(int? id)
         {
             if (id == null)
                 return NotFound();

@@ -35,6 +35,10 @@ namespace ExpoBookApp.Models
         public DateTime CreatedAt { get; set; }
 
         public int CreatedByUserId { get; set; }
+
+        // Supporting document for venue approval
+        [ValidateNever]
+        public string SupportingDocumentPath { get; set; } // to store the file path or name
     }
 
     public enum ApprovalStatus

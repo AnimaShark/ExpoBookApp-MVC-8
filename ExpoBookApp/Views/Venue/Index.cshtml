@@ -30,10 +30,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.ApprovalStatus)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.CreatedBy)
-            </th>
-            <th></th>
+            </th> *@
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -55,17 +55,30 @@
                 @Html.DisplayFor(modelItem => item.State)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.ApprovalStatus)
+                @if (item.ApprovalStatus == ApprovalStatus.Approved)
+                {
+                    <span class="badge rounded-pill bg-success">Approved</span>
+                }
+                else if (item.ApprovalStatus == ApprovalStatus.Rejected)
+                {
+                    <span class="badge rounded-pill bg-danger">Rejected</span>
+                }
+                else if (item.ApprovalStatus == ApprovalStatus.Pending)
+                {
+                    <span class="badge rounded-pill bg-warning text-dark">Pending</span>
+                }
             </td>
-            <td>
+            @* <td>
                 @Html.DisplayFor(modelItem => item.CreatedBy.Email)
-            </td>
+            </td> *@
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-controller="Venue" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | 
+                <a asp-controller="Venue" asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
+                <a asp-controller="Venue" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ExpoBookApp.Models.User>;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2>Pending Registrations</h2>
+@if (!Model.Any())
+{
+    <br />
+    <div class="alert alert-info">
+        No pending registrations available.
+    </div>
+    <br />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User Email</th>
+                <th>User Role</th>
+                <th>Registration Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var register in Model)
+            {
+                <tr>
+                    <td>@register.Email</td>
+                    <td>@register.Role</td>
+                    @* <td>@register.CreatedAt</td>
+                    <td>
+                        <form asp-controller="Admin" asp-action="ApproveRegistration" asp-route-id="@registration.Id" method="post" style="display:inline;">
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form asp-controller="Admin" asp-action="RejectRegistration" asp-route-id="@registration.Id" method="post" style="display:inline;">
+                            <button type="submit">Reject</button>
+                        </form>
+                    </td> *@
+                </tr>
+            }
+        </tbody>
+    </table>
+}

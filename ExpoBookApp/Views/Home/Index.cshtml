@@ -8,11 +8,25 @@
     @if (User.Identity.IsAuthenticated)
     {
         <h4>Hello, @User.Identity.Name!</h4>
+        <br />
     }
     <p>Welcome to ExpoBookApp!</a>.</p>
     @if (role == "Organizer")
     {
         <p>To get started, click<a asp-controller = "Home" asp - action = "BrowseEvent" > Browse Events</a> or ><a asp-controller = "Event" asp - action = "Create" > Create an Event</a></p>
+    }
+    else if (role == "Leaser")
+    {
+        <p>To get started, click <a asp-controller="Venue" asp-action="Index">Browse Venues</a> or <a asp-controller="Venue" asp-action="Create">List New Venue</a>.</p>
+    }
+    else if (role == "Participants")
+    {
+        <p>To get started, click <a asp-controller="Home" asp-action="BrowseEvent">Browse Events</a> or <a asp-controller="Ticket" asp-action="MyTickets">View My Tickets</a>.</p>
+    }
+    else if (role == "Admin")
+    {
+        <p>As an Admin, you can manage registration and venues.</p>
+        <p>To get started, click <a asp-controller="Admin" asp-action="PendingRegistrations">Manage Registrations</a> or <a asp-controller="Admin" asp-action="PendingVenues">Manage Venues</a>.</p>
     }
     else
     {

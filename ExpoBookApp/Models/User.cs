@@ -7,6 +7,9 @@ namespace ExpoBookApp.Models
     {
         /// User Attributes
         public int Id { get; set; }
+        //Required(ErrorMessage = "Username is required")]
+        //[StringLength(50, ErrorMessage = "Maximum 50 characters")]
+        //public string Name { get; set; }
 
         [Required]
         [EmailAddress]
@@ -24,5 +27,6 @@ namespace ExpoBookApp.Models
         ///Account Activation Attribute
         public bool IsEmailConfirmed { get; set; } = false;
         public string? EmailConfirmationToken { get; set; }
+        //public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

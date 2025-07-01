@@ -44,14 +44,25 @@
             @Html.DisplayNameFor(model => model.ApprovalStatus)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ApprovalStatus)
+            @if (Model.ApprovalStatus == ApprovalStatus.Approved)
+            {
+                <span class="badge rounded-pill bg-success">Approved</span>
+            }
+            else if (Model.ApprovalStatus == ApprovalStatus.Rejected)
+            {
+                <span class="badge rounded-pill bg-danger">Rejected</span>
+            }
+            else if (Model.ApprovalStatus == ApprovalStatus.Pending)
+            {
+                <span class="badge rounded-pill bg-warning text-dark">Pending</span>
+            }
         </dd>
-        <dt class = "col-sm-2">
+        @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedBy)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CreatedBy.Email)
-        </dd>
+        </dd> *@
     </dl>
 </div>
 <div>

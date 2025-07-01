@@ -18,7 +18,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar nav-pills navbar-expand-sm navbar-toggleable-sm navbar-light bg-warning border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:silkscreen; font-weight:bold">EXPO-BOOK-APP</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -57,6 +57,19 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="MyTickets">My Ticket</a>
                             </li>
                         }
+                        else if (role == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="#">Dashboard</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Leaser</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="PendingVenues">Listing Approval</a></li>
+                                </ul>
+                            </li>
+                            
+                        }
                         else
                         {
                             <li class="nav-item">
@@ -76,6 +89,27 @@
                         }
                         else
                         {
+                            @* <li class="dropdown">
+                                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Login
+                                </button>
+                                <div class="dropdown-menu ">
+                                    <form asp-controller="Account" asp-action="Login" class="px-4 py-3">
+                                        <div class="form-group">
+                                            <label for="exampleDropdownFormEmail1">Email address</label>
+                                            <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleDropdownFormPassword1">Password</label>
+                                            <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Log in</button>
+                                    </form>
+                                    <div class="dropdown-divider"></div>
+                                    <p>New around here? </p><a asp-controller="Account" asp-action="Register" class="dropdown-item">Register Here!</a>
+                                    <a asp-controller="Account" asp-action="Forgot Password" class="dropdown-item">Forgot password?</a>
+                                </div>
+                            </li> *@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
@@ -98,7 +132,8 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script> 

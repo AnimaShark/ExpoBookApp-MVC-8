@@ -13,6 +13,14 @@ public class AdminController : Controller
         _context = context;
     }
 
+    //GET: Admin/Index
+    // Admin dashboard
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    // GET: Admin/PendingVenues
     // View all venues pending approval
     public IActionResult PendingVenues()
     {
@@ -20,10 +28,11 @@ public class AdminController : Controller
             .Include(v => v.CreatedBy)
             .Where(v => v.ApprovalStatus == ApprovalStatus.Pending)
             .ToList();
-
+    
         return View(venues);
     }
 
+    // GET: Admin/ApprovedVenues
     // Approve a venue
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -39,6 +48,7 @@ public class AdminController : Controller
         return RedirectToAction(nameof(PendingVenues));
     }
 
+    // GET: Admin/RejectedVenues
     // Reject a venue
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -52,4 +62,12 @@ public class AdminController : Controller
         return RedirectToAction(nameof(PendingVenues));
     }
 
+    // GET: Admin/PendingRegistrations
+    public IActionResult PendingRegistrations()
+    {
+        var users = _context.Users
+            .Where(u => !u.IsEmailConfirmed && (u.Role == "Leaser" || u.Role == "Organizer"))
+            .ToList();
+        return View(users);
+    }
 }

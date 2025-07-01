@@ -9,6 +9,7 @@ namespace ExpoBookApp.Models
         public List<Event> UpcomingEvents { get; set; }
         public List<Event> AllEvents { get; set; }
         public List<string> EventType { get; set; }
+        public List<string> CreatedBy { get; set; } // Organizer email addresses 
         public string TypeFilter { get; set; }
     }
 }

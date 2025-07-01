@@ -1,4 +1,5 @@
-﻿using ExpoBookApp.Models;
+﻿using ExpoBookApp.Migrations;
+using ExpoBookApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace ExpoBookApp.Controllers
         {
             var userEmail = User.Identity?.Name;
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            var now = DateTime.UtcNow;
 
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -35,7 +37,7 @@ namespace ExpoBookApp.Controllers
                 .Where(e => e.CreatedBy.Email == userEmail)
                 .ToList();
 
-            var now = DateTime.UtcNow;
+            
 
             // Only show upcomming events created by the organizer
             vm.CreatedUpcomingEvents = _context.Events

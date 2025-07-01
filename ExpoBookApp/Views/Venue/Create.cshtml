@@ -37,6 +37,13 @@
                 <input asp-for="State" class="form-control" placeholder="Selangor" required />
                 <span asp-validation-for="State" class="text-danger"></span>
             </div><br />
+
+            @* <div class="form-group">
+                <label asp-for="SupportingDocumentPath">Upload Supporting Document (PDF)</label>
+                <input asp-for="SupportingDocumentPath" type="file" accept=".pdf" class="form-control" />
+                <span asp-validation-for="SupportingDocumentPath" class="text-danger"></span>
+            </div>*@
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create Venue" class="btn btn-primary" />
             </div>

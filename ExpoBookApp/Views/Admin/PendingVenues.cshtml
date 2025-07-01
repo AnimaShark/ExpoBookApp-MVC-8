@@ -1,0 +1,48 @@
+﻿@model List<Venues>
+
+<h2>Pending Venue Listings</h2>
+
+@if (!Model.Any())
+{
+    <br />
+    <div class="alert alert-info">
+        No pending venue listings available.
+    </div>
+    <br />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Location Name</th>
+                <th>Location Size</th>
+                <th>Location Address</th>
+                <th>Leaser Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var venue in Model)
+            {
+                <tr>
+                    <td>@venue.Name</td>
+                    <td>@venue.Size</td>
+                    <td>@venue.Address</td>
+                    <td>@venue.CreatedBy?.Email</td>
+                    <td>
+                        <form asp-controller="Admin" asp-action="ApproveVenue" asp-route-id="@venue.Id" method="post" style="display:inline;">
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form asp-controller="Admin" asp-action="RejectVenue" asp-route-id="@venue.Id" method="post" style="display:inline;">
+                            <button type="submit">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<div class="mt-3">
+    <a class="btn btn-primary" asp-controller="Admin" asp-action="Index">Back to Admin Dashboard</a>
+</div>

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="bootstrap" Version="4.0.0" />
     <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
@@ -18,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Leaser\" />
     <Folder Include="wwwroot\img\logo\" />
   </ItemGroup>
 

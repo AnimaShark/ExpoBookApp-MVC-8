@@ -34,39 +34,49 @@
     </div>
 
     <h4>Event Created</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Event Name</th>
-                <th>EventType</th>
-                <th>Venue</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Ticket Price</th>
-                <th>Tickets Sold</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.CreatedEvents)
-            {
+    <div class="table-responsive">
+        <table>
+            <thead>
                 <tr>
-                    <td>@item.EventName</td>
-                    <td>@item.EventType</td>
-                    <td>@item.Venue</td>
-                    <td>@item.StartDate.ToString("dd MMM yyyy")</td>
-                    <td>@item.EndDate.ToString("dd MMM yyyy")</td>
-                    <td>RM @item.TicketPrice</td>
-                    <td>@item.TicketBought / @item.TicketQuota</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Detail" asp-route-id="@item.Id">Detail</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
+                    <th>Event Name</th>
+                    <th>EventType</th>
+                    <th>Venue</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Ticket Price</th>
+                    <th>Tickets Sold</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CreatedEvents)
+                {
+                    <tr>
+                        <td>@item.EventName</td>
+                        <td>@item.EventType</td>
+                        <td>@item.Venue</td>
+                        <td>@item.StartDate.ToString("dd MMM yyyy")</td>
+                        <td>@item.EndDate.ToString("dd MMM yyyy")</td>
+                        <td>@if (item.TicketPrice != 0) 
+                            {
+                                <p>RM </p>@item.TicketPrice 
+                            }
+                            else
+                            {
+                                <p>Free</p>
+                            }
+                        </td>
+                        <td>@item.TicketBought / @item.TicketQuota</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-warning">Edit</a> |
+                            <a asp-action="Detail" asp-route-id="@item.Id" class="btn-info">Detail</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 @* else if (role == "Leaser") //Leaser section is not needed in this context *@
 @*{
@@ -106,7 +116,7 @@ else if (role == "Participants")
                         <td>@item.StartDate.ToShortDateString()</td>
                         <td>@item.EndDate.ToShortDateString()</td>
                         <td>RM @item.TicketPrice</td>
-                        <td>@item.CreatedBy.Email</td>
+                        <td>@item.CreatedBy?.Email</td>
                     </tr>
                 }
             </tbody>
@@ -150,8 +160,18 @@ else if (role == "Participants")
                     <td>@item.Venue</td>
                     <td>@item.StartDate.ToShortDateString()</td>
                     <td>@item.EndDate.ToShortDateString()</td>
-                    <td>RM @item.TicketPrice</td>
-                    <td>@item.CreatedBy.Email</td>
+                    <td>
+                        @if (item.TicketPrice != 0)
+                        {
+                            <p>RM </p>
+                            @item.TicketPrice
+                        }
+                        else
+                        {
+                            <p>Free</p>
+                        }
+                    </td>
+                    <td>@item.CreatedBy?.Email</td>
                 </tr>
             }
         </tbody>
