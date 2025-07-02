@@ -89,12 +89,12 @@
                         }
                         else
                         {
-                            @* <li class="dropdown">
-                                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            @* <li class="dropstart">
+                                <button class="btn btn-primary dropdown-toggle show" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Login
                                 </button>
-                                <div class="dropdown-menu ">
-                                    <form asp-controller="Account" asp-action="Login" class="px-4 py-3">
+                                <ul class="dropdown-menu show" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(-158.625px, 0px);" data-popper-placement="left-start">
+                                    <form asp-controller="Account" asp-action="Login" class="mx-auto">
                                         <div class="form-group">
                                             <label for="exampleDropdownFormEmail1">Email address</label>
                                             <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
@@ -106,9 +106,13 @@
                                         <button type="submit" class="btn btn-primary">Log in</button>
                                     </form>
                                     <div class="dropdown-divider"></div>
-                                    <p>New around here? </p><a asp-controller="Account" asp-action="Register" class="dropdown-item">Register Here!</a>
-                                    <a asp-controller="Account" asp-action="Forgot Password" class="dropdown-item">Forgot password?</a>
-                                </div>
+                                    <div>
+                                        <p>New around here? </p><a asp-controller="Account" asp-action="Register" class="dropdown-item">Register Here!</a>
+                                    </div>
+                                    <div>
+                                        <a asp-controller="Account" asp-action="Forgot Password" class="dropdown-item">Forgot password?</a>
+                                    </div>
+                                </ul>
                             </li> *@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
