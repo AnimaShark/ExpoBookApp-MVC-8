@@ -8,5 +8,10 @@ namespace ExpoBookApp.Controllers
         {
             return View();
         }
+
+        public IActionResult BuyTicket()
+        {
+            return View();
+        }
     }
 }

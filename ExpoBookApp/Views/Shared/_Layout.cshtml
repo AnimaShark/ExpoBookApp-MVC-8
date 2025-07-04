@@ -51,7 +51,7 @@
                         else if (role == "Participants")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="BrowseEvent">Browse Event</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Event" asp-action="Explore">Browse Event</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="MyTickets">My Ticket</a>
@@ -135,6 +135,9 @@
             &copy; 2025 - ExpoBookApp - <a asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
         </div>
     </footer>
+        
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -142,5 +145,10 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script> 
     @RenderSection("Scripts", required: false)
+
+    <!-- Bootstrap Bundle (includes Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeo5F8zV8h4CkZ9vvUXxDq1ER8jzWnQ1ZtKW1pL4V1wNJbxk" 
+        crossorigin="anonymous"></script>
 </body>
 </html>

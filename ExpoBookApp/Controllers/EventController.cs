@@ -78,6 +78,42 @@ namespace ExpoBookApp.Controllers
             return View(vm);
         }
 
+        //GET: /Event/Explore
+        [Authorize(Roles = "Participants")]
+        public IActionResult Explore(string search, DateTime? startDate, DateTime? endDate)
+        {
+            // Check if user is authenticated
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+
+            var events = _context.Events
+                .Include(e => e.CreatedBy)
+                .Where(e => e.StartDate >= DateTime.UtcNow);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                events = events.Where(e =>
+                    e.EventName.Contains(search) ||
+                    e.Description.Contains(search));
+            }
+
+            if (startDate.HasValue)
+            {
+                events = events.Where(e => e.StartDate >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                events = events.Where(e => e.EndDate <= endDate.Value);
+            }
+
+            var eventList = events.OrderBy(e => e.StartDate)
+                .ToList();
+
+            return View(eventList);
+        }
+
         // GET: /Event/Detail/5
         public async Task<IActionResult> Detail(int? id)
         {

@@ -1,0 +1,118 @@
+﻿@model List<ExpoBookApp.Models.Event>
+@{
+    ViewData["Title"] = "Explore Events";
+}
+
+<h2>Explore Events</h2>
+
+<!--Carousel listing-->
+@if (Model.Any())
+{
+    var groupedEvents = Model
+        .Select((e, i) => new { Event = e, Index = i })
+        .GroupBy(x => x.Index / 3)
+        .ToList();
+
+    <div id="eventCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < groupedEvents.Count; i++)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="container">
+                        <div class="row">
+                            @foreach (var item in groupedEvents[i])
+                            {
+                                <div class="col-md-4 d-flex align-items-stretch">
+                                    <div class="p-3 text-center w-100" style="background-color: #f8f9fa;">
+                                        <h4>@item.Event.EventName</h4>
+                                        <p>@item.Event.Description</p>
+                                        <p><strong>@item.Event.StartDate.ToString("dd MMM yyyy")</strong></p>
+                                        <p>Venue: @item.Event.Venue</p>
+                                        <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-primary btn-sm">
+                                            Buy Ticket
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (groupedEvents.Count > 1)
+        {
+            <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        }
+    </div>
+}
+else
+{
+    <div class="carousel slide mb-4">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="d-flex justify-content-center align-items-center" style="height: 300px; background-color: #f8f9fa;">
+                    <div class="text-center">
+                        <p class="text-muted">No events found for this search.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!--For testing model read from DB-->
+@* <p>Total events: @Model.Count</p>
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>@item.EventName</li>
+    }
+</ul> *@ 
+
+<!--Filter by search-->
+<form method="get" class="mb-4">
+    <input type="text" name="search" class="form-control mb-2" placeholder="Search by name or description" value="@Context.Request.Query["search"]" />
+    <br />
+    <div class="d-inline">
+        <input type="date" value="startDate" class="form-comtrol rounded-pill" value="@Context.Request.Query["startDate"]" />
+    </div><p class="d-inline">  </p>
+    <div class="d-inline">
+        <input type="date" value="endDate" class="form-comtrol rounded-pill" value="@Context.Request.Query["endDate"]" />
+    </div>
+    <div class="col">
+        <br /><button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <br />
+</form>
+
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.EventName</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p><strong>Date:</strong> @item.StartDate.ToString("dd MMM yyyy")</p>
+                        <p><strong>Venue:</strong> @item.Venue</p>
+                        <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Id" class="btn btn-success">Buy Ticket</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No events found.</div>
+}
