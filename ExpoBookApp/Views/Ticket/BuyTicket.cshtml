@@ -1,8 +1,37 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ExpoBookApp.Models.Event
 @{
 }
-<p>
-    This is the Buy Ticket page. The page will allow users to purchase tickets for events listed on the ExpoBook platform.
-</p>
+
+<h2>Confirm Ticket Purchase</h2>
+
+<div class="card mb-4">
+    <div class="card-body text-center">
+        <h3>@Model.EventName</h3>
+        <p>@Model.Description</p>
+        <p><strong>@Model.StartDate.ToString("dd MMM yyyy")</strong> at @Model.Venue</p>
+        <p class="d-inline fw-bold">RM </p>
+        @if (Model.TicketPrice == 0) 
+        {
+            <p class="d-inline fw-bold">FREE</p>
+        } 
+        else
+        {
+            <p class="d-inline fw-bold">@Model.TicketPrice (per Ticket)</p>
+        }
+
+        <form asp-action="ConfirmTicket" method="post">
+            <input type="hidden" name="eventId" value="@Model.Id" />
+            <div class="mb-3">
+                <label for="TicketQty" class="form-label">Ticket Quantity (Max 5): <span id="qtyValue">1</span> ticket(s)</label>
+                <input type="range" class="form-range" min="1" max="5" step="1" value="1" id="TicketQty" name="TicketQty" oninput="document.getElementById('qtyValue').innerText = this.value;">
+                <p class="d-inline float-start">1</p>
+                <p class="d-inline ">3</p>
+                <p class="d-inline float-end">5</p>
+            </div><br />
+            <button type="submit" class="btn btn-success">Confirm Purchase</button>
+            <a asp-controller="Event" asp-action="Explore" class="btn btn-secondary">Cancel</a>
+        </form>
+        <br />
+        <p class="text-muted mt-3">By confirming, you agree to our <a asp-controller="Home" asp-action="Terms" class="text-decoration-none">Terms and Conditions</a>.</p>
+    </div>
+</div>

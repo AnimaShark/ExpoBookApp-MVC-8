@@ -34,7 +34,7 @@ namespace ExpoBookApp.Controllers
             // Only show events created by the organizer
             vm.CreatedEvents = _context.Events
                 .Include(e => e.CreatedBy)
-                .Where(e => e.CreatedBy.Email == userEmail)
+                .Where(e => e.CreatedBy.Email == userEmail && !e.IsCancelled)
                 .ToList();
 
             
@@ -42,14 +42,14 @@ namespace ExpoBookApp.Controllers
             // Only show upcomming events created by the organizer
             vm.CreatedUpcomingEvents = _context.Events
                 .Include(e => e.CreatedBy)
-                .Where(e => e.CreatedBy.Email == userEmail && e.StartDate > now)
+                .Where(e => e.CreatedBy.Email == userEmail && e.StartDate > now && !e.IsCancelled)
                 .OrderBy(e => e.StartDate)
                 .ToList();
             
             // List of upcoming events
             vm.UpcomingEvents = _context.Events
                 .Include(e => e.CreatedBy)
-                .Where(e => e.StartDate > now)
+                .Where(e => e.StartDate > now && !e.IsCancelled)
                 .OrderBy(e => e.StartDate)
                 .Take(5)
                 .ToList();
@@ -60,7 +60,7 @@ namespace ExpoBookApp.Controllers
             if (!string.IsNullOrEmpty(typeFilter))
             {
                 allEventsQuery = allEventsQuery
-                    .Where(e => e.EventType == typeFilter);
+                    .Where(e => e.EventType == typeFilter && !e.IsCancelled);
             }
             vm.AllEvents = allEventsQuery
                 .Include(e => e.CreatedBy)
@@ -69,6 +69,7 @@ namespace ExpoBookApp.Controllers
             // Event Type for dropdown filter
             vm.EventType = _context.Events
                 .Include(e => e.CreatedBy)
+                .Where(e => !e.IsCancelled)
                 .Select(e => e.EventType)
                 .Distinct()
                 .ToList();
@@ -298,7 +299,7 @@ namespace ExpoBookApp.Controllers
             var @event = await _context.Events.FindAsync(id);
             if (@event != null)
             {
-                _context.Events.Remove(@event);
+                @event.IsCancelled = true;
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

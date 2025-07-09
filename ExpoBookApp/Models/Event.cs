@@ -39,6 +39,8 @@ namespace ExpoBookApp.Models
         public bool IsPublic { get; set; } = false;
         //Event is online or offline
         public bool IsOnline { get; set; } = false;
+        //Event is cancelled
+        public bool IsCancelled { get; set; } = false;
 
         //References to Who created the event
         public int CreatedByUserId { get; set; }

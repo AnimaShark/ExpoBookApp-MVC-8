@@ -1,0 +1,59 @@
+﻿@model List<ExpoBookApp.Models.TicketViewModel>
+@{
+}
+<br />
+<h2>My Tickets</h2>
+
+<br />
+<br />
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Ticket ID</th>
+            <th>Event</th>
+            <th>Venue</th>
+            <th>Date</th>
+            <th>Quantity</th>
+            <th>Purchased At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr class="@(ticket.IsCancelled ? "table-secondary text-muted" : "")">
+                <td>@ticket.TicketCode</td>
+                <td>
+                    @if (ticket.IsEventMissing)
+                    {
+                        <span class="text-muted">Event no longer available</span>
+                    }
+                    else if (ticket.IsCancelled)
+                    {
+                        <span class="fw-bold">Event Cancelled</span>
+                    }
+                    else
+                    {
+                        <span>@ticket.EventName</span>
+                    }
+                </td>
+                <td>@(ticket.Venue ?? "-")</td>
+                <td>@(ticket.StartDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                <td>@ticket.Quantity</td>
+                <td>@ticket.PurchaseDate.ToString("dd MMM yyyy hh:mm tt")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="alert alert-dark text-center show" role="alert">
+    Ticket sold are non-refundable.
+</div>

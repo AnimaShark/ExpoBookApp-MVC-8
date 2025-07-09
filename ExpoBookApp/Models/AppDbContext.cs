@@ -15,6 +15,8 @@ namespace ExpoBookApp.Models
 
         public DbSet<Venues> Venues { get; set; }
 
+        public DbSet<Ticket> Tickets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             {
@@ -23,6 +25,18 @@ namespace ExpoBookApp.Models
                     .HasConversion<string>();
 
                 base.OnModelCreating(modelBuilder);
+
+                modelBuilder.Entity<Ticket>()
+                    .HasOne(t => t.Event)
+                    .WithMany()
+                    .HasForeignKey(t => t.EventId)
+                    .OnDelete(DeleteBehavior.NoAction); 
+
+                modelBuilder.Entity<Ticket>()
+                    .HasOne(t => t.User)
+                    .WithMany()
+                    .HasForeignKey(t => t.UserId)
+                    .OnDelete(DeleteBehavior.NoAction);
             }
         }
     }
