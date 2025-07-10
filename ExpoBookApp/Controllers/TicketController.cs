@@ -38,6 +38,20 @@ namespace ExpoBookApp.Controllers
         {
             var userEmail = User.Identity.Name;
             var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            
+            if (user == null) return Unauthorized();
+
+            // Check event ticket availability
+            var selectedEvent = _context.Events.FirstOrDefault(e => e.Id == eventId);
+
+            if (selectedEvent == null || selectedEvent.IsCancelled)
+                return NotFound("Event not available");
+
+            if (selectedEvent.TicketQuota > 0 && selectedEvent.TicketBought + TicketQty > selectedEvent.TicketQuota)
+            {
+                TempData["ErrorMessage"] = "Sorry, this event is already sold out.";
+                return RedirectToAction("Explore","Event");
+            }
 
             // Ticket code generation logic
             var today = DateTime.UtcNow.Date;
@@ -52,9 +66,9 @@ namespace ExpoBookApp.Controllers
 
             var ticketQuantity = TicketQty;
 
-            if (user == null)
-                return Unauthorized();
-            
+            //If Event ticket is bought, update the TicketBought count
+            selectedEvent.TicketBought += TicketQty;
+
             // Assign Ticket values
             var ticket = new Ticket
             {
