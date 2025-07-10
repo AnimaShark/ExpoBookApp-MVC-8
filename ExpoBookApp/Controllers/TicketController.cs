@@ -9,10 +9,12 @@ namespace ExpoBookApp.Controllers
     public class TicketController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<TicketController> _logger;
 
-        public TicketController(AppDbContext context)
+        public TicketController(AppDbContext context, ILogger<TicketController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Ticket/BuyTicket
@@ -46,7 +48,7 @@ namespace ExpoBookApp.Controllers
 
             var nextTicketNumber = todayTicketsCount + 1;
 
-            var ticketCode = $"{datePrefix}-{todayTicketsCount.ToString("D4")}"; // Format: ddMMyyyy-0001
+            var ticketCode = $"{datePrefix}-{todayTicketsCount.ToString("D4")}"; // Format: yyMMdd-0001
 
             var ticketQuantity = TicketQty;
 
@@ -64,10 +66,20 @@ namespace ExpoBookApp.Controllers
             };
 
             _context.Tickets.Add(ticket);
-            await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Ticket purchased successfully!";
-            return RedirectToAction("MyTickets");
+            try
+            {
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Ticket purchased successfully!";
+                return RedirectToAction("MyTickets");
+            }
+            catch (DbUpdateException ex) //Handle concurrency issues or other database update exceptions
+            {
+                _logger.LogError(ex, "Ticket purchase failed for user {UserEmail} on event {EventId}", userEmail, eventId); //log the error
+
+                TempData["ErrorMessage"] = "Ticket purchase failed due to high traffic. Please try again.";
+                return RedirectToAction("BuyTicket", new { eventId });
+            }
         }
 
         // GET: Ticket/MyTickets

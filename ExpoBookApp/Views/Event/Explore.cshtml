@@ -9,8 +9,8 @@
     <input type="text" name="search" class="form-control mb-2" placeholder="Search by name or description" value="@Context.Request.Query["search"]" />
     <br />
     <div class="d-inline">
-        <input type="date" value="startDate" class="form-comtrol rounded-pill me-3" value="@Context.Request.Query["startDate"]" />
-        <input type="date" value="endDate" class="form-comtrol rounded-pill me-3" value="@Context.Request.Query["endDate"]" />
+        <input type="date" name="startDate" class="form-comtrol rounded-pill me-3" value="@Context.Request.Query["startDate"]" />
+        <input type="date" name="endDate" class="form-comtrol rounded-pill me-3" value="@Context.Request.Query["endDate"]" />
         <button type="submit" class="btn rounded-pill btn-primary me-3">Filter</button>
     </div>
     <br />

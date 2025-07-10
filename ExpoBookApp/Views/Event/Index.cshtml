@@ -5,78 +5,181 @@
 
 @{
     var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+
+    ViewData["Title"] = "My Events";
+
+    var CreatedUpEvt = Model.CreatedUpcomingEvents;
 }
 
 @if (role == "Organizer")
 {
     <p>Welcome Organizer. Here are your created events:</p>
     <h4>Upcoming Event</h4>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var item1 in Model.CreatedUpcomingEvents.Take(3))
-        {
-            <div class="col">
-                <div class="card h-50">
-                    <img src="@item1.ImagePath" class="card-img-top" alt="@item1.EventName" style="max-height: 200px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@item1.EventName</h5>
-                        <p class="card-text">
-                            Theme: @item1.EventType <br />
-                            Venue: @item1.Venue <br />
-                            Dates: @item1.StartDate.ToShortDateString() - @item1.EndDate.ToShortDateString() <br />
-                            Ticket: RM @item1.TicketPrice <br />
-                            Bought: @item1.TicketBought / @item1.TicketQuota
-                        </p>
-                        <a asp-action="Detail" asp-route-id="@item1.Id" class="btn btn-primary">Details</a>
+
+    // 3 cards of upcoming events
+    @if (Model.CreatedUpcomingEvents != null && Model.CreatedUpcomingEvents.Any())
+    {
+        <div id="createdEventsCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.CreatedUpcomingEvents.Count; i += 3)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="row row-cols-1 row-cols-md-3 g-4">
+                            @for (int j = i; j < i + 3 && j < Model.CreatedUpcomingEvents.Count; j++)
+                            {
+                                var item1 = Model.CreatedUpcomingEvents[j];
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <img src="@item1.ImagePath" class="card-img-top" alt="@item1.EventName" style="max-height: 200px; object-fit: cover;" />
+                                        <div class="card-body">
+                                            <h5 class="card-title">@item1.EventName</h5>
+                                            <p class="card-text">
+                                                Theme: @item1.EventType <br />
+                                                Venue: @item1.Venue <br />
+                                                Dates: @item1.StartDate.ToShortDateString() - @item1.EndDate.ToShortDateString() <br />
+                                                Ticket: RM @item1.TicketPrice <br />
+                                                Bought: @item1.TicketBought / @item1.TicketQuota
+                                            </p>
+                                            <a asp-action="Detail" asp-route-id="@item1.Id" class="btn btn-primary">Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button class="carousel-control-prev btn-outline-dark" type="button" data-bs-target="#createdEventsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next btn-outline-dark" type="button" data-bs-target="#createdEventsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">No upcoming events.</p>
+    }
+
+
+    // Carousel for all events
+    @* @if (CreatedUpEvt())
+    {
+        var groupedEvents = Model
+            .Select((e, i) => new { Event = e, Index = i })
+            .GroupBy(x => x.Index / 3)
+            .ToList();
+
+        <div id="eventCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < groupedEvents.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="container">
+                            <div class="row">
+                                @foreach (var item in groupedEvents[i])
+                                {
+                                    <div class="col-md-4 d-flex align-items-stretch">
+                                        <div class="p-3 text-center w-100"  style="background-color: khaki ; ">
+                                            <h4>@item.Event.EventName</h4>
+                                            <p>
+                                                @((item.Event.Description?.Length > 300)
+                                                                                ? item.Event.Description.Substring(0, 300) + "..."
+                                                                                : item.Event.Description)
+                            </p>
+                            <p><strong>@item.Event.StartDate.ToString("dd MMM yyyy")</strong></p>
+                            <p>Venue: @item.Event.Venue</p>
+                            <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-primary">
+                                Buy Ticket
+                            </a>
+                        </div>
+                    </div>
+                                        }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (groupedEvents.Count > 1)
+            {
+                <button class="carousel-control-prev btn-outline-dark" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next btn-outline-dark" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="carousel slide mb-4">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-center align-items-center" style="height: 300px; background-color: khaki;">
+                        <div class="text-center">
+                            <p class="text-muted">No events found for this search.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    } *@
 
+    <hr />
+
+
+    // Event created by organizer
     <h4>Event Created</h4>
-    <div class="table-responsive">
-        <table>
-            <thead>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Event Name</th>
+                <th>EventType</th>
+                <th>Venue</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Ticket Price</th>
+                <th>Tickets Sold</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CreatedEvents)
+            {
                 <tr>
-                    <th>Event Name</th>
-                    <th>EventType</th>
-                    <th>Venue</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Ticket Price</th>
-                    <th>Tickets Sold</th>
-                    <th>Actions</th>
+                    <td>@item.EventName</td>
+                    <td>@item.EventType</td>
+                    <td>@item.Venue</td>
+                    <td>@item.StartDate.ToString("dd MMM yyyy")</td>
+                    <td>@item.EndDate.ToString("dd MMM yyyy")</td>
+                    <td>@if (item.TicketPrice != 0) 
+                        {
+                            <p>RM </p>
+                            <p>@item.TicketPrice</p>
+                        }
+                        else
+                        {
+                            <p>Free</p>
+                        }
+                    </td>
+                    <td>@item.TicketBought / @item.TicketQuota</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-warning">Edit</a> |
+                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn-info">Detail</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-danger">Delete</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.CreatedEvents)
-                {
-                    <tr>
-                        <td>@item.EventName</td>
-                        <td>@item.EventType</td>
-                        <td>@item.Venue</td>
-                        <td>@item.StartDate.ToString("dd MMM yyyy")</td>
-                        <td>@item.EndDate.ToString("dd MMM yyyy")</td>
-                        <td>@if (item.TicketPrice != 0) 
-                            {
-                                <p>RM </p>@item.TicketPrice 
-                            }
-                            else
-                            {
-                                <p>Free</p>
-                            }
-                        </td>
-                        <td>@item.TicketBought / @item.TicketQuota</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-warning">Edit</a> |
-                            <a asp-action="Detail" asp-route-id="@item.Id" class="btn-info">Detail</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 }
 @* else if (role == "Leaser") //Leaser section is not needed in this context *@
 @*{

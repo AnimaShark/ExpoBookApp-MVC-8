@@ -1,5 +1,8 @@
-﻿namespace ExpoBookApp.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ExpoBookApp.Models
 {
+    [Index(nameof(TicketCode), IsUnique = true)]
     public class Ticket
     {
         public int Id { get; set; }

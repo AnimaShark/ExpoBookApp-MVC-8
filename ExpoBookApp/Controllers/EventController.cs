@@ -22,7 +22,11 @@ namespace ExpoBookApp.Controllers
         {
             var userEmail = User.Identity?.Name;
             var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            //Convert UTC to Malaysia Time Zone
+            var malaysiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time");
             var now = DateTime.UtcNow;
+
 
             if (string.IsNullOrEmpty(userEmail))
             {
