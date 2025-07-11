@@ -21,6 +21,12 @@ namespace ExpoBookApp.Controllers
         [HttpGet]
         public IActionResult BuyTicket(int eventId)
         {
+            var userEmail = User.Identity?.Name;
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user == null)
+                return Unauthorized("User not found");
+
             var selectedEvent = _context.Events
                 //.Include(e => e.Venue)
                 .Where(e => !e.IsCancelled)
@@ -29,7 +35,21 @@ namespace ExpoBookApp.Controllers
             if (selectedEvent == null)
                 return NotFound();
 
-            return View("BuyTicket", selectedEvent);
+            // Check if user already bought tickets
+            var existingTicket = _context.Tickets
+                .FirstOrDefault(t => t.EventId == eventId && t.UserId == user.Id);
+
+            int alreadyBought = existingTicket?.Quantity ?? 0;
+            int remaining = Math.Max(0, 5 - alreadyBought);
+
+            var vm = new BuyTicketViewModel
+            {
+                Event = selectedEvent,
+                AlreadyBought = alreadyBought,
+                MaxRemaining = remaining
+            };
+
+            return View(vm);
         }
 
         // POST: Ticket/ConfirmTicket
@@ -38,43 +58,48 @@ namespace ExpoBookApp.Controllers
         {
             var userEmail = User.Identity.Name;
             var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
-            
-            if (user == null) return Unauthorized();
 
-            // Check event ticket availability
+            if (user == null)
+                return Unauthorized();
+
             var selectedEvent = _context.Events.FirstOrDefault(e => e.Id == eventId);
 
             if (selectedEvent == null || selectedEvent.IsCancelled)
                 return NotFound("Event not available");
 
+            // Get how many tickets this user has already bought for this event
+            var ticketsAlreadyBought = _context.Tickets
+                .Where(t => t.UserId == user.Id && t.EventId == eventId)
+                .Sum(t => t.Quantity);
+
+            // Enforce per-user limit for non-public events
+            if (!selectedEvent.IsPublic && ticketsAlreadyBought + TicketQty > 5)
+            {
+                TempData["ErrorMessage"] = $"You've already purchased {ticketsAlreadyBought} ticket(s). " +
+                                           $"You can only buy up to 5 in total for this event.";
+                return RedirectToAction("BuyTicket", new { eventId });
+            }
+
+            // Enforce overall event quota
             if (selectedEvent.TicketQuota > 0 && selectedEvent.TicketBought + TicketQty > selectedEvent.TicketQuota)
             {
                 TempData["ErrorMessage"] = "Sorry, this event is already sold out.";
-                return RedirectToAction("Explore","Event");
+                return RedirectToAction("Explore", "Event");
             }
 
             // Ticket code generation logic
             var today = DateTime.UtcNow.Date;
             var datePrefix = today.ToString("yyMMdd");
+            var todayTicketsCount = _context.Tickets.Count(t => t.PurchaseDate.Date == today);
+            var ticketCode = $"{datePrefix}-{todayTicketsCount.ToString("D4")}";
 
-            var todayTicketsCount = _context.Tickets
-                .Count(t => t.PurchaseDate.Date == today);
-
-            var nextTicketNumber = todayTicketsCount + 1;
-
-            var ticketCode = $"{datePrefix}-{todayTicketsCount.ToString("D4")}"; // Format: yyMMdd-0001
-
-            var ticketQuantity = TicketQty;
-
-            //If Event ticket is bought, update the TicketBought count
             selectedEvent.TicketBought += TicketQty;
 
-            // Assign Ticket values
             var ticket = new Ticket
             {
                 EventId = eventId,
                 UserId = user.Id,
-                Quantity = ticketQuantity,
+                Quantity = TicketQty,
                 PurchaseDate = DateTime.UtcNow,
                 TicketCode = ticketCode
             };
@@ -87,14 +112,14 @@ namespace ExpoBookApp.Controllers
                 TempData["SuccessMessage"] = "Ticket purchased successfully!";
                 return RedirectToAction("MyTickets");
             }
-            catch (DbUpdateException ex) //Handle concurrency issues or other database update exceptions
+            catch (DbUpdateException ex)
             {
-                _logger.LogError(ex, "Ticket purchase failed for user {UserEmail} on event {EventId}", userEmail, eventId); //log the error
-
+                _logger.LogError(ex, "Ticket purchase failed for user {UserEmail} on event {EventId}", userEmail, eventId);
                 TempData["ErrorMessage"] = "Ticket purchase failed due to high traffic. Please try again.";
                 return RedirectToAction("BuyTicket", new { eventId });
             }
         }
+
 
         // GET: Ticket/MyTickets
         public IActionResult MyTickets()

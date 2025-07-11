@@ -1,4 +1,4 @@
-﻿@model ExpoBookApp.Models.Event
+﻿@model ExpoBookApp.Models.BuyTicketViewModel
 @{
 }
 
@@ -12,32 +12,55 @@
 }
 <div class="card mb-4">
     <div class="card-body text-center">
-        <h3>@Model.EventName</h3>
-        <p>@Model.Description</p>
-        <p><strong>@Model.StartDate.ToString("dd MMM yyyy")</strong> at @Model.Venue</p>
+        <h3>@Model.Event.EventName</h3>
+        <p>@Model.Event.Description</p>
+        <p><strong>@Model.Event.StartDate.ToString("dd MMM yyyy")</strong> at @Model.Event.Venue</p>
         <p class="d-inline fw-bold">RM </p>
-        @if (Model.TicketPrice == 0) 
+        @if (Model.Event.TicketPrice == 0) 
         {
             <p class="d-inline fw-bold">FREE</p>
         } 
         else
         {
-            <p class="d-inline fw-bold">@Model.TicketPrice (per Ticket)</p>
+            <p class="d-inline fw-bold">@Model.Event.TicketPrice (per Ticket)</p>
         }
 
-        <form asp-action="ConfirmTicket" method="post">
-            <input type="hidden" name="eventId" value="@Model.Id" />
-            <div class="mb-3">
-                <label for="TicketQty" class="form-label">Ticket Quantity (Max 5): <span id="qtyValue">1</span> ticket(s)</label>
-                <input type="range" class="form-range" min="1" max="5" step="1" value="1" id="TicketQty" name="TicketQty" oninput="document.getElementById('qtyValue').innerText = this.value;">
-                <p class="d-inline float-start">1</p>
-                <p class="d-inline ">3</p>
-                <p class="d-inline float-end">5</p>
-            </div><br />
-            <button type="submit" class="btn btn-success">Confirm Purchase</button>
-            <a asp-controller="Event" asp-action="Explore" class="btn btn-secondary">Cancel</a>
-        </form>
+        @{
+            var isPublic = Model.Event.IsPublic;
+            var maxQty = isPublic ? 20 : Model.MaxRemaining;
+        }
+
+        @if (!isPublic && maxQty == 0)
+        {
+            <div class="alert alert-warning mt-3" role="alert">
+                You’ve already purchased the maximum of 5 tickets for this event.
+            </div>
+            <a asp-controller="Event" asp-action="Explore" class="btn btn-secondary mt-2">Back to Explore</a>
+        }
+        else
+        {
+            <form asp-action="ConfirmTicket" method="post">
+                <input type="hidden" name="eventId" value="@Model.Event.Id" />
+                <div class="mb-3">
+                    <label for="TicketQty" class="form-label">
+                        Ticket Quantity: <span id="qtyValue">1</span> ticket(s)
+                    </label>
+                    <input type="range" class="form-range"
+                           min="1" max="@maxQty" step="1" value="1"
+                           id="TicketQty" name="TicketQty"
+                           oninput="document.getElementById('qtyValue').innerText = this.value;">
+                    <p class="d-inline float-start">1</p>
+                    <p class="d-inline ">@((maxQty + 1) / 2)</p>
+                    <p class="d-inline float-end">@maxQty</p>
+                </div><br />
+                <button type="submit" class="btn btn-success">Confirm Purchase</button>
+                <a asp-controller="Event" asp-action="Explore" class="btn btn-secondary">Cancel</a>
+            </form>
+        }
+        
         <br />
-        <p class="text-muted mt-3">By confirming, you agree to our <a asp-controller="Home" asp-action="Terms" class="text-decoration-none">Terms and Conditions</a>.</p>
+        <p class="text-muted mt-3">
+            By confirming, you agree to our <a asp-controller="Home" asp-action="Terms" class="text-decoration-none">Terms and Conditions</a>.
+        </p>
     </div>
 </div>
