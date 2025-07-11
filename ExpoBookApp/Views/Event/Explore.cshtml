@@ -2,19 +2,26 @@
 @{
     ViewData["Title"] = "Explore Events";
 }
-<br />
+<h2 class="mb-4">@ViewData["Title"]</h2>
 
-<!--Filter by search-->
+<!-- Search & Date Filter -->
 <form method="get" class="mb-4">
-    <input type="text" name="search" class="form-control mb-2" placeholder="Search by name or description" value="@Context.Request.Query["search"]" />
-    <br />
-    <div class="d-inline">
-        <input type="date" name="startDate" class="form-comtrol rounded-pill me-3" value="@Context.Request.Query["startDate"]" />
-        <input type="date" name="endDate" class="form-comtrol rounded-pill me-3" value="@Context.Request.Query["endDate"]" />
-        <button type="submit" class="btn rounded-pill btn-primary me-3">Filter</button>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <input type="text" name="search" class="form-control" placeholder="Search by name or description" value="@Context.Request.Query["search"]" />
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="startDate" class="form-control" value="@Context.Request.Query["startDate"]" />
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="endDate" class="form-control" value="@Context.Request.Query["endDate"]" />
+        </div>
     </div>
-    <br />
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
 </form>
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -22,43 +29,42 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-<hr />
-<!--Carousel listing-->
-<h2>Upcoming Events</h2>
-<br />
+
+<!-- Carousel: Highlight Upcoming Events -->
 @if (Model.Any())
 {
     var groupedEvents = Model
-        .Select((e, i) => new { Event = e, Index = i })
-        .GroupBy(x => x.Index / 3)
-        .ToList();
+    .OrderBy(e => e.StartDate)
+    .Take(9)
+    .Select((e, i) => new { Event = e, Index = i })
+    .GroupBy(x => x.Index / 3)
+    .ToList();
 
-    <div id="eventCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <h3 class="mb-3">Upcoming Events</h3>
+    <div id="eventCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-inner">
             @for (int i = 0; i < groupedEvents.Count; i++)
             {
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <div class="container">
-                        <div class="row">
-                            @foreach (var item in groupedEvents[i])
-                            {
-                                <div class="col-md-4 d-flex align-items-stretch">
-                                    <div class="p-3 text-center w-100" @* style="background-color: khaki ; *@">
-                                        <h4>@item.Event.EventName</h4>
-                                        <p>
-                                            @((item.Event.Description?.Length > 300)
-                                                ? item.Event.Description.Substring(0,300) + "..."
-                                                : item.Event.Description)
+                    <div class="row g-3 justify-content-center">
+                        @foreach (var item in groupedEvents[i])
+                        {
+                            <div class="col-md-4">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title">@item.Event.EventName</h5>
+                                        <p class="card-text text-muted small">
+                                            @((item.Event.Description?.Length > 150) ? item.Event.Description.Substring(0, 150) + "..." : item.Event.Description)
                                         </p>
-                                        <p><strong>@item.Event.StartDate.ToString("dd MMM yyyy")</strong></p>
-                                        <p>Venue: @item.Event.Venue</p>
-                                        <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-primary">
-                                            Buy Ticket
-                                        </a>
+                                        <p class="mb-1"><strong>Date:</strong> @item.Event.StartDate.ToString("dd MMM yyyy")</p>
+                                        <p class="mb-2"><strong>Venue:</strong> @item.Event.Venue</p>
+                                        <div class="mt-auto text-center">
+                                            <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-outline-primary btn-sm">Buy Ticket</a>
+                                        </div>
                                     </div>
                                 </div>
-                            }
-                        </div>
+                            </div>
+                        }
                     </div>
                 </div>
             }
@@ -66,11 +72,11 @@
 
         @if (groupedEvents.Count > 1)
         {
-            <button class="carousel-control-prev btn-outline-dark" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next btn-outline-dark" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
@@ -79,44 +85,28 @@
 }
 else
 {
-    <div class="carousel slide mb-4">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="d-flex justify-content-center align-items-center" style="height: 300px; background-color: khaki;">
-                    <div class="text-center">
-                        <p class="text-muted">No events found for this search.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="alert alert-warning text-center">No upcoming events found.</div>
 }
-<hr />
-<!--For testing model read from DB-->
-@* <p>Total events: @Model.Count</p>
-<ul>
-    @foreach (var item in Model)
-    {
-        <li>@item.EventName</li>
-    }
-</ul> *@ 
 
-<!--Event List-->
-<h2>All Events</h2>
-<br />
+<!-- Event List -->
+<h3 class="mb-3">All Events</h3>
 @if (Model.Any())
 {
-    <div class="row">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var item in Model)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col">
                 <div class="card h-100 shadow-sm">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@item.EventName</h5>
-                        <p class="card-text">@item.Description</p>
-                        <p><strong>Date:</strong> @item.StartDate.ToString("dd MMM yyyy")</p>
-                        <p><strong>Venue:</strong> @item.Venue</p>
-                        <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Id" class="btn btn-primary">Buy Ticket</a>
+                        <p class="card-text text-muted small">
+                            @((item.Description?.Length > 150) ? item.Description.Substring(0, 150) + "..." : item.Description)
+                        </p>
+                        <p class="mb-1"><strong>Date:</strong> @item.StartDate.ToString("dd MMM yyyy")</p>
+                        <p class="mb-2"><strong>Venue:</strong> @item.Venue</p>
+                        <div class="mt-auto">
+                            <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Id" class="btn btn-primary w-100">Buy Ticket</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -125,5 +115,5 @@ else
 }
 else
 {
-    <div class="alert alert-info">No events found.</div>
+    <div class="alert alert-info text-center">No events available.</div>
 }

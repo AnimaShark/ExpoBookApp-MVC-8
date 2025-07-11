@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar nav-pills navbar-expand-sm navbar-toggleable-sm navbar-light bg-warning border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -124,14 +124,15 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <main role="main" class="flex-grow-1">
+        <div class="container py-4">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+        
+    </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="border-top footer text-muted mt-auto py-3 bg-light">
+        <div class="container text-center">
             &copy; 2025 - ExpoBookApp - <a asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
         </div>
     </footer>

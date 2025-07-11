@@ -20,3 +20,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+main {
+    overflow: auto;
+}
+
+footer {
+    z-index: 0;
+    background-color: white;
+}
