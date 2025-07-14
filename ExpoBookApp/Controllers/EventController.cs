@@ -136,6 +136,11 @@ namespace ExpoBookApp.Controllers
         // GET: /Event/Create
         public IActionResult Create()
         {
+            ViewBag.Venues = _context.Venues
+                .Include(v => v.CreatedBy)
+                .Where(v => v.ApprovalStatus == ApprovalStatus.Approved && v.IsActive)
+                .ToList();
+
             return View();
         }
 
@@ -206,7 +211,14 @@ namespace ExpoBookApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(@event);
+            else
+            {
+                ViewBag.Venues = _context.Venues
+                .Where(v => v.ApprovalStatus == ApprovalStatus.Approved && v.IsActive)
+                .ToList();
+
+                return View(@event);
+            }
         }
 
         [Authorize]

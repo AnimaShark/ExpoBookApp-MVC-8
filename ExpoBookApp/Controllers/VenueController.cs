@@ -26,7 +26,7 @@ namespace ExpoBookApp.Controllers
 
             var venues = _context.Venues
                 .Include(v => v.CreatedBy)
-                .Where(v => v.CreatedBy.Email == userEmail)
+                .Where(v => v.CreatedBy.Email == userEmail && v.IsActive)
                 .ToList();
             return View(venues);
         }
@@ -187,7 +187,7 @@ namespace ExpoBookApp.Controllers
             var venue = await _context.Venues.FindAsync(id);
             if (venue != null)
             {
-                _context.Venues.Remove(venue);
+                venue.IsActive = false;
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

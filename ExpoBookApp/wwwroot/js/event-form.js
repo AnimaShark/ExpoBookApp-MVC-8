@@ -36,6 +36,19 @@ $(document).ready(function () {
 
     // Trigger it once on page load
     togglePriceQuota();
+
+    const venueSelect = $('#VenueSelect');
+
+    //Handle auto capacity estimate for Venue selection
+    venueSelect.on('change', function () {
+        const selectedOption = $(this).find('option:selected');
+        const size = parseInt(selectedOption.data('size'));
+
+        if (!isNaN(size)) {
+            const estimatedCapacity = Math.floor((size * 0.8) / 5);
+            quotaInput.val(estimatedCapacity);
+        }
+    });
 });
 
 //Start date and end date validation

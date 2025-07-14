@@ -39,6 +39,8 @@ namespace ExpoBookApp.Models
         // Supporting document for venue approval
         [ValidateNever]
         public string SupportingDocumentPath { get; set; } // to store the file path or name
+
+        public bool IsActive { get; set; } = true; // Mark venue as active (For Soft Delete)
     }
 
     public enum ApprovalStatus

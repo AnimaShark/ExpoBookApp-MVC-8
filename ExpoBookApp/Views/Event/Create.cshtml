@@ -1,6 +1,5 @@
 ﻿@model ExpoBookApp.Models.Event;
 
-
 @{
     ViewBag.Title = "Create";
 }
@@ -48,10 +47,21 @@
         <p class="text-muted">Max. 500 characters</p>
     </div><br />
     <div class="form-group">
-        <span asp-for="Venue" class="form-label fw-bold">Location (<strong style="color:red">*</strong>)</span>
-        <select asp-for="Venue" class="form-control"> 
+        <span class="form-label fw-bold">Location (<strong style="color:red">*</strong>)</span>
+        <select asp-for="Venue" class="form-control" id="VenueSelect"> 
             <option value="">-- Select a venue --</option>
-            <option value="testvenue">TestVenue-</option>
+            <option value="testvenue">TestVenue</option>
+            @if (ViewBag.Venues != null)
+            {
+                foreach (var venue in (List<ExpoBookApp.Models.Venues>)ViewBag.Venues)
+                {
+                    <option value="@venue.Name"
+                            data-size="@venue.Size"
+                            data-address="@venue.Address">
+                        @venue.Name (@venue.Size sq ft)
+                    </option>
+                }
+            }
         </select>
         <span asp-validation-for="Venue" class="text-danger"></span>
     </div><br />
@@ -97,4 +107,20 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script src="~/js/event-form.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const venueDropdown = document.getElementById("VenueDropdown");
+            const quotaInput = document.getElementById("TicketQuota");
+
+            venueDropdown.addEventListener("change", function () {
+                const selected = this.options[this.selectedIndex];
+                const size = parseFloat(selected.getAttribute("data-size"));
+
+                if (!isNaN(size)) {
+                    const estimated = Math.floor((size * 0.8) / 5);
+                    quotaInput.value = estimated;
+                }
+            });
+        });
+    </script>
 }
