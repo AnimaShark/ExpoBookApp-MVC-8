@@ -37,9 +37,10 @@ namespace ExpoBookApp.Controllers
 
             // Check if user already bought tickets
             var existingTicket = _context.Tickets
-                .FirstOrDefault(t => t.EventId == eventId && t.UserId == user.Id);
+                .Where(t => t.EventId == eventId && t.UserId == user.Id)
+                .Sum(t => t.Quantity);
 
-            int alreadyBought = existingTicket?.Quantity ?? 0;
+            int alreadyBought = existingTicket;
             int remaining = Math.Max(0, 5 - alreadyBought);
 
             var vm = new BuyTicketViewModel

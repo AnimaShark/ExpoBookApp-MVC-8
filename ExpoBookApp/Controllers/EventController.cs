@@ -41,7 +41,10 @@ namespace ExpoBookApp.Controllers
                 .Where(e => e.CreatedBy.Email == userEmail && !e.IsCancelled)
                 .ToList();
 
-            
+            vm.DeletedEvents = _context.Events
+                .Include(e => e.CreatedBy)
+                .Where(e => e.CreatedBy.Email == userEmail && e.IsCancelled)
+                .ToList();
 
             // Only show upcomming events created by the organizer
             vm.CreatedUpcomingEvents = _context.Events
@@ -187,6 +190,15 @@ namespace ExpoBookApp.Controllers
                 if (@event.TicketPrice == 0 && @event.TicketQuota > 0)
                 {
                     @event.IsPublic = true;
+                }
+
+                if (@event.Venue == "Online")
+                {
+                    @event.IsOnline = true;
+                }
+                else
+                {
+                    @event.IsOnline = false;
                 }
 
                 ////Image check and save

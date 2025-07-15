@@ -30,3 +30,21 @@ footer {
 .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
+
+/* Carousel CSS*/
+/*.carousel-control-prev,
+.carousel-control-next {
+    width: 5%;
+    opacity: 1;*/ /* Always visible */
+/*}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 50% 50%;*/ /* Smaller icons */
+/*}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background-color: rgba(0,0,0,0.1);*/ /* Optional hover effect */
+/*}*/
+

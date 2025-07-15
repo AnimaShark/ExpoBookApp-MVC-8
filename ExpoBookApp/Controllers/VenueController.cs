@@ -171,10 +171,16 @@ namespace ExpoBookApp.Controllers
                 return NotFound();
 
             var venue = await _context.Venues
+                .Include(v => v.CreatedBy)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (venue == null)
                 return NotFound();
+
+            var hasUpcomingEvents = _context.Events
+                .Any(e => e.Venue == venue.Name && e.EndDate >= DateTime.UtcNow && !e.IsCancelled);
+
+            ViewBag.HasUpcomingEvents = hasUpcomingEvents;
 
             return View(venue);
         }
@@ -182,12 +188,17 @@ namespace ExpoBookApp.Controllers
         // POST: Venue/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var venue = await _context.Venues.FindAsync(id);
+            var affectedEvents = _context.Events
+                .Where(e => e.Venue == venue.Name && e.EndDate >= DateTime.UtcNow && !e.IsCancelled)
+                .ToList();
+
             if (venue != null)
             {
                 venue.IsActive = false;
+                affectedEvents.ForEach(e => e.IsCancelled = true);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

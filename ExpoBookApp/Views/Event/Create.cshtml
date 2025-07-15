@@ -51,6 +51,7 @@
         <select asp-for="Venue" class="form-control" id="VenueSelect"> 
             <option value="">-- Select a venue --</option>
             <option value="testvenue">TestVenue</option>
+            <option value="Online">Online</option>
             @if (ViewBag.Venues != null)
             {
                 foreach (var venue in (List<ExpoBookApp.Models.Venues>)ViewBag.Venues)

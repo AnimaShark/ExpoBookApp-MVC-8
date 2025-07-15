@@ -36,17 +36,25 @@
                     {
                         <span class="text-muted">Event no longer available</span>
                     }
-                    else if (ticket.IsCancelled)
+                    @* else if (ticket.IsCancelled)
                     {
                         <span class="fw-bold">Event Cancelled</span>
-                    }
+                    } *@
                     else
                     {
                         <span>@ticket.EventName</span>
                     }
                 </td>
                 <td>@(ticket.Venue ?? "-")</td>
-                <td>@(ticket.StartDate?.ToString("dd MMM yyyy") ?? "-")</td>
+                <td>@if (ticket.IsCancelled)
+                    {
+                        <span class="fw-bold">Event Cancelled</span>
+                    }
+                    else 
+                    {
+                        <span>@ticket.StartDate?.ToString("dd MMM yyyy")</span>
+                    }
+                        </td>
                 <td>@ticket.Quantity</td>
                 <td>@ticket.PurchaseDate.ToString("dd MMM yyyy hh:mm tt")</td>
             </tr>

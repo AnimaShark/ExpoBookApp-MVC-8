@@ -49,8 +49,12 @@
                            min="1" max="@maxQty" step="1" value="1"
                            id="TicketQty" name="TicketQty"
                            oninput="document.getElementById('qtyValue').innerText = this.value;">
+                    <!--Range Step-->
                     <p class="d-inline float-start">1</p>
-                    <p class="d-inline ">@((maxQty + 1) / 2)</p>
+                    @if (maxQty > 2) 
+                    {
+                        <p class="d-inline">@((maxQty + 1) / 2)</p>
+                    }
                     <p class="d-inline float-end">@maxQty</p>
                 </div><br />
                 <button type="submit" class="btn btn-success">Confirm Purchase</button>

@@ -66,7 +66,7 @@
     }
 
 
-    // Carousel for all events
+    // Banner Carousel for all events
     @* @if (CreatedUpEvt())
     {
         var groupedEvents = Model
@@ -172,9 +172,56 @@
                     </td>
                     <td>@item.TicketBought / @item.TicketQuota</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-warning">Edit</a> |
-                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn-info">Detail</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-danger">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-sm btn-warning">Edit</a> 
+                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn-sm btn-primary">Detail</a> 
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <hr />
+
+    <h2>Cancelled Events</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>EventType</th>
+                <th>Venue</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Price</th>
+                <th>Organizer</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DeletedEvents)
+            {
+                <tr>
+                    <td>@item.EventName</td>
+                    <td>@item.EventType</td>
+                    <td>@item.Venue</td>
+                    <td>@item.StartDate.ToShortDateString()</td>
+                    <td>@item.EndDate.ToShortDateString()</td>
+                    <td>
+                        @if (item.TicketPrice != 0)
+                        {
+                            <p>RM </p>
+                            @item.TicketPrice
+                        }
+                        else
+                        {
+                            <p>Free</p>
+                        }
+                    </td>
+                    <td>@item.CreatedBy?.Email</td>
+                    <td>@if (item.IsCancelled) 
+                        {
+                            <strong>Cancelled</strong>
+                        }
                     </td>
                 </tr>
             }
@@ -284,6 +331,9 @@ else
 {
     <p>Unknown role or not authenticated.</p>
 }
+
+
+
 
 
 
