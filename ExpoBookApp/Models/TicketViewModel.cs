@@ -12,6 +12,9 @@ namespace ExpoBookApp.Models
         public DateTime PurchaseDate { get; set; }
         public bool IsCancelled { get; set; }
         public bool IsEventMissing { get; set; }
+
+        //Pull event details from the Event model
+        public Event Event { get; set; }
     }
 
 }

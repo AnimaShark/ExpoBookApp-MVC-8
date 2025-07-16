@@ -98,7 +98,7 @@ namespace ExpoBookApp.Controllers
 
             var events = _context.Events
                 .Include(e => e.CreatedBy)
-                .Where(e => e.StartDate >= DateTime.UtcNow);
+                .Where(e => e.StartDate >= DateTime.UtcNow && !e.IsCancelled);
 
             if (!string.IsNullOrEmpty(search))
             {

@@ -58,9 +58,40 @@
                                         </p>
                                         <p class="mb-1"><strong>Date:</strong> @item.Event.StartDate.ToString("dd MMM yyyy")</p>
                                         <p class="mb-2"><strong>Venue:</strong> @item.Event.Venue</p>
-                                        <div class="mt-auto text-center">
-                                            <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-outline-primary btn-sm">Buy Ticket</a>
-                                        </div>
+                                        @{
+                                            int remaining = item.Event.TicketQuota - item.Event.TicketBought;
+                                            int threshold = (int)Math.Floor(item.Event.TicketQuota * 0.2);
+                                        }
+                                        @if (item.Event.IsPublic)
+                                        {
+                                            <p class="text-primary fw-bold">Open Event</p>
+                                            <div class="mt-auto text-center">
+                                                <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-outline-info">Free Entry!</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            @if (remaining <= threshold)
+                                            {
+                                                <p class="text-danger fw-bold">Only @remaining tickets left!</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="fw-bold">Tickets Available!</p>
+                                            }
+                                            @if (item.Event.TicketBought == item.Event.TicketQuota)
+                                            {
+                                                <div class="mt-auto text-center">
+                                                    <a class="btn btn-outline-primary btn-sm disabled">Ticket Sold</a>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                               <div class="mt-auto text-center">
+                                                    <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Event.Id" class="btn btn-outline-primary btn-sm">Buy Ticket</a>
+                                               </div> 
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -104,9 +135,44 @@ else
                         </p>
                         <p class="mb-1"><strong>Date:</strong> @item.StartDate.ToString("dd MMM yyyy")</p>
                         <p class="mb-2"><strong>Venue:</strong> @item.Venue</p>
-                        <div class="mt-auto">
-                            <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Id" class="btn btn-primary w-100">Buy Ticket</a>
-                        </div>
+                        @{
+                            int remaining = item.TicketQuota - item.TicketBought;
+                            int threshold = (int)Math.Floor(item.TicketQuota * 0.2);
+                        }
+                        @if (remaining <= threshold) 
+                        {
+                            if (!item.IsPublic)
+                            {
+                                <p class="text-danger fw-bold">@remaining tickets left!</p>
+                            }
+                            else
+                            {
+                                <p class="text-primary fw-bold">Open Event</p>
+                            }
+                        }
+                        else
+                        {
+                            <p class="fw-bold">Ticket Available!</p>
+                        }
+                        @if (item.IsPublic)
+                        {
+                            <div class="mt-auto text-center">
+                                <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Id" class="btn btn-info w-100">Free Entry!</a>
+                            </div>
+                        }
+                        else if (item.TicketBought == item.TicketQuota)
+                        {
+                            <div class="mt-auto text-center">
+                                <a class="btn btn-primary btn-sm w-100 disabled">Ticket Sold</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mt-auto text-center">
+                                <a asp-controller="Ticket" asp-action="BuyTicket" asp-route-eventId="@item.Id" class="btn btn-primary w-100">Buy Ticket</a>
+                            </div>
+                        }
+                        
                     </div>
                 </div>
             </div>
