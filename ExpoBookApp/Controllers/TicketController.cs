@@ -88,6 +88,13 @@ namespace ExpoBookApp.Controllers
                 return RedirectToAction("Explore", "Event");
             }
 
+            //Check ticket quantity
+            if (TicketQty <= 0)
+            {
+                TempData["ErrorMessage"] = "Invalid ticket quantity. Please select a valid number of tickets.";
+                return RedirectToAction("BuyTicket", new { eventId });
+            }
+
             // Ticket code generation logic
             var today = DateTime.UtcNow.Date;
             var datePrefix = today.ToString("yyMMdd");

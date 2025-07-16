@@ -42,20 +42,36 @@
             <form asp-action="ConfirmTicket" method="post">
                 <input type="hidden" name="eventId" value="@Model.Event.Id" />
                 <div class="mb-3">
+                    <!--Live Qty Display-->
                     <label for="TicketQty" class="form-label">
-                        Ticket Quantity: <span id="qtyValue">1</span> ticket(s)
+                        Ticket Quantity: <span id="qtyValue">0</span> ticket(s)
                     </label>
-                    <input type="range" class="form-range"
-                           min="1" max="@maxQty" step="1" value="1"
+                    <!--Ticket Range-->
+                    @{
+                        int min = 0;
+                        int max = maxQty;
+                    }
+                    <!--Ticket Slider-->
+                    <input type="range" class="form-range" min="@min" max="@max" step="1" value="@min"
                            id="TicketQty" name="TicketQty"
                            oninput="document.getElementById('qtyValue').innerText = this.value;">
-                    <!--Range Step-->
-                    <p class="d-inline float-start">1</p>
+
+                    <!--Slider Step/Tick Mark-->
+                    <div class="slider-ticks d-flex justify-content-between px-1" style="margin-top: -10px;">
+                        @for (int i = min; i <= max; i++)
+                        {
+                            <span class="tick text-center">
+                                <div class="tick-line"></div>
+                                <div class="tick-label">@i</div>
+                            </span>
+                        }
+                    </div>
+                    @* <p class="d-inline float-start">1</p>
                     @if (maxQty > 2) 
                     {
                         <p class="d-inline">@((maxQty + 1) / 2)</p>
                     }
-                    <p class="d-inline float-end">@maxQty</p>
+                    <p class="d-inline float-end">@maxQty</p> *@
                 </div><br />
                 <button type="submit" class="btn btn-success">Confirm Purchase</button>
                 <a asp-controller="Event" asp-action="Explore" class="btn btn-secondary">Cancel</a>
