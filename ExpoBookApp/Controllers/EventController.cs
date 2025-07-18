@@ -3,6 +3,7 @@ using ExpoBookApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace ExpoBookApp.Controllers
@@ -91,10 +92,12 @@ namespace ExpoBookApp.Controllers
         public IActionResult Explore(string search, DateTime? startDate, DateTime? endDate)
         {
             // Check if user is authenticated
-            if (!User.Identity.IsAuthenticated)
-            {
+
+            var userEmail = User.Identity.Name;
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+
+            if (user == null)
                 return Unauthorized();
-            }
 
             var events = _context.Events
                 .Include(e => e.CreatedBy)
